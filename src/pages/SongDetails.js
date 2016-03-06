@@ -22,6 +22,7 @@ import TimerMixin from 'react-timer-mixin';
 
 
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
+import SongPlayer from '../components/SongPlayer';
 import Lyrics from '../components/Lyrics';
 
 var {
@@ -78,15 +79,12 @@ class SongDetails extends Component {
     this.setState(React.addons.update(this.state, state));
   }
 
-  isMediaLoaded() {
-    return this.state.songLoaded && this.state.lyricLoaded;
-  }
-
   preloadMedia() {
     if (this.preloadingStarted) {
       return;
     }
     this.preloadingStarted = true;
+
     var song = this.props.song;
     Cache.getMedia(this.songPath, song.track, function(data) {
       this.songSound = new Sound(this.songPath, '', function(error) {
@@ -106,48 +104,7 @@ class SongDetails extends Component {
     }.bind(this));
   }
 
-  _getSoundTimer() {
-    if (!this.songSound) {
-      return '--/--';
-    }
-    return '--/' + this.songSound.getDuration();
-  }
-
-  _renderStickyHeader(song, songSound) {
-    return (<View style={styles.header}>
-              <View style={styles.songDetails}>
-                <Text style={styles.trackTitle}>{song.title}</Text>
-                <Text style={styles.trackAlbum}>{song.album}</Text>
-              </View>
-              <View style={styles.playerControls}>
-                <Text style={styles.timers}>{this._getSoundTimer()}</Text>
-                <TouchableOpacity key={'recond-button'} onPress={this.playPause.bind(this)} style={styles.button}>
-                  <Icon name={'record'} size={50} style={[styles.icon, styles.recordIcon, this.state.isRecording && styles.hide]}/>
-                  <Icon name={'pause'} size={50} style={[styles.icon, styles.pauseIcon, !this.state.isRecording && styles.hide]}/>
-                </TouchableOpacity>
-                <TouchableOpacity key={'mute-button'} onPress={this.toggleMute.bind(this)} style={styles.button}>
-                  <Icon name={'ios-mic'} size={30} style={[styles.icon, this.state.isMute && styles.hide]}/>
-                  <Icon name={'ios-mic-off'} size={30} style={[styles.icon, !this.state.isMute && styles.hide]}/>
-                </TouchableOpacity>
-              </View>
-            </View>);
-  }
-
   render() {
-    var showSpinner = false;
-
-    if (this.state.isRecording) {
-      if (this.isMediaLoaded()) {
-        this.songSound.play();
-      } else {
-        showSpinner = true;
-      }
-    } else {
-      if (this.songSound) {
-        this.songSound.pause();
-      }
-    }
-
     var song = this.props.song;
     return (<ParallaxScrollView
       style={styles.parallax}
@@ -155,16 +112,13 @@ class SongDetails extends Component {
       contentBackgroundColor="#FFFFFF"
       parallaxHeaderHeight={300}
       stickyHeaderHeight={100}
-      renderStickyHeader={() => {
-        var self = this;
-        return () => {self._renderStickyHeader(song)};
-      }}
+      renderStickyHeader={() => (
+        <View></View>
+      )}
       renderForeground={() => (
         <View style={styles.foreground}>
           <Image style={styles.largeArtwork} source={{uri: song.thumbnail}}></Image>
-          {
-            this._renderStickyHeader(song)
-          }
+          <SongPlayer song={song} songSound={this.songSound}></SongPlayer>
         </View>
       )}>
       <View style={styles.lyricScreen}>
@@ -173,17 +127,9 @@ class SongDetails extends Component {
     </ParallaxScrollView>);
   }
 
-  playPause() {
-    this.updateState({isRecording: {$set: !this.state.isRecording}});
-  }
-
-  toggleMute() {
-    this.updateState({isMute: {$set: !this.state.isMute}});
-  }
-
   syncLyrics() {
     console.log(">>> Trying to sync Current Time");
-    if (!this.songSound || !this.state.isRecording) {
+    if (!this.songSound) {
       return;
     }
     console.log(">>> Syncing Current Time");
@@ -198,77 +144,8 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
 
-    header: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'column',
-    },
-
-    foreground: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'column',
-    },
-
-    songDetails: {
-      flex: 1,
-      height: 30,
-      marginLeft: 4,
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      backgroundColor: 'white'
-    },
-    trackTitle: {
-      fontSize: 20,
-      textAlign: 'left'
-    },
-    trackAlbum: {
-      fontSize: 12,
-      textAlign: 'left',
-      marginLeft: 4
-    },
-
-    playerControls: {
-      height: 30,
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'white'
-    },
-    button: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingBottom: 10
-    },
-    icon: {
-      margin: 4,
-      padding: 4,
-      color: 'black',
-    },
-
-    recordIcon: {
-      color: 'red'
-    },
-    pauseIcon: {
-      color: 'blue'
-    },
-
-    timers: {
-      fontSize: 12,
-      textAlign: 'left',
-      marginLeft: 4
-    },
-
-    largeArtwork: {
-      width: deviceWidth,
-      height: 200
-    },
-
-    hide: {
-      width: 0,
-      height: 0
-    }
+  largeArtwork: {
+    width: deviceWidth,
+    height: 200
+  }
 });
