@@ -9,6 +9,10 @@ var {
   InteractionManager,
 } = React;
 
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+const SongPlayerActions = require('../actions/songplayer')
+
 const CommonStyle = require('../css/common.js')
 var LRC = require('../utils/lrc')
 
@@ -18,7 +22,8 @@ class Lyrics extends Component {
     super(props);
     this.createLRCPlayerIfNeeded(this.props.lyrics);
     this.state = {
-      lyricsParsed: false
+      lyricsParsed: false,
+      currentPosition: 0
     };
   }
 
@@ -60,7 +65,18 @@ class Lyrics extends Component {
     );
   }
 }
-module.exports = Lyrics;
+
+function mapStateToProps(state) {
+  return {
+    currentTime: state.songplayer.currentTime,
+    song: state.songplayer.currentSong,
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(SongPlayerActions, dispatch)
+}
+module.exports = connect(mapStateToProps, mapDispatchToProps)(Lyrics)
+
 
 const styles = StyleSheet.create({
   container: {

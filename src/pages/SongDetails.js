@@ -18,12 +18,11 @@ const CommonStyle = require('../css/common.js')
 var Cache = require('../utils/Cache');
 var RNFS = require('react-native-fs');
 var Sound = require('react-native-sound');
-import TimerMixin from 'react-timer-mixin';
-
 
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import SongPlayer from '../components/SongPlayer';
 import Lyrics from '../components/Lyrics';
+import SongPlayerActions from '../actions/songplayer'
 
 var {
   height: deviceHeight,
@@ -60,7 +59,6 @@ class SongDetails extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.preloadMedia();
     });
-    TimerMixin.setInterval(this.syncLyrics.bind(this), 1000);
   }
 
   componentWillUnmount() {
@@ -69,7 +67,6 @@ class SongDetails extends Component {
       this.songSound = null;
     }
     this.unMounted = true;
-    TimerMixin.componentWillUnmount.call(this);
   }
 
   updateState(state) {
@@ -113,27 +110,18 @@ class SongDetails extends Component {
       parallaxHeaderHeight={300}
       stickyHeaderHeight={100}
       renderStickyHeader={() => (
-        <View></View>
+        <SongPlayer songSound={this.songSound}></SongPlayer>
       )}
       renderForeground={() => (
         <View style={styles.foreground}>
           <Image style={styles.largeArtwork} source={{uri: song.thumbnail}}></Image>
-          <SongPlayer song={song} songSound={this.songSound}></SongPlayer>
+          <SongPlayer songSound={this.songSound}></SongPlayer>
         </View>
       )}>
       <View style={styles.lyricScreen}>
-        <Lyrics lyrics={this.lyricData} isRecording={this.state.isRecording} currentTime={this.state.currentTime} />
+        <Lyrics lyrics={this.lyricData} />
       </View>
     </ParallaxScrollView>);
-  }
-
-  syncLyrics() {
-    console.log(">>> Trying to sync Current Time");
-    if (!this.songSound) {
-      return;
-    }
-    console.log(">>> Syncing Current Time");
-    this.songSound.getCurrentTime((val) => this.updateState({currentTime: {$set: val * 1000}}) );
   }
 }
 module.exports = SongDetails;

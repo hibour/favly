@@ -11,29 +11,27 @@ var {
 } = React;
 
 const CommonStyle = require('../css/common.js')
+const moment = require('moment');
 
-class SongItem extends Component {
+class RecordingItem extends Component {
 
   constructor(props) {
     super(props);
   }
 
   render() {
-    var song = this.props.song;
+    var recording = this.props.recording;
     return (
       <TouchableHighlight onPress={this.props.onPress}>
         <View style={styles.container}>
-          <Image source={{uri: song.thumbnail}} style={styles.thumbnail}/>
-          <View style={styles.rightContainer}>
-            <Text style={styles.title}>{song.title}</Text>
-            <Text style={styles.year}>{song.year}</Text>
-          </View>
+          <Text style={styles.title}>{recording.title}</Text>
+          <Text style={styles.date}>{moment(recording.time).toNow(true)}</Text>
         </View>
       </TouchableHighlight>
     );
   }
 }
-module.exports = SongItem;
+module.exports = RecordingItem;
 
 const styles = StyleSheet.create({
   container: {
@@ -43,20 +41,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 4,
   },
-  rightContainer: {
-    flex: 1,
-  },
-  thumbnail: {
-    width: 84,
-    height: 84,
-    marginRight: 4,
-  },
   title: {
     fontSize: 20,
     marginBottom: 8,
     textAlign: 'left',
   },
-  year: {
+  date: {
     textAlign: 'left',
   },
 });

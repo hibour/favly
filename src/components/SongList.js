@@ -10,27 +10,28 @@ var {
   Component,
   ListView,
 } = React;
+
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+
 import {Actions} from 'react-native-router-flux'
+const SongPlayerActions = require('../actions/songplayer')
 
 import SongItem from './SongItem';
 
 class SongList extends Component {
   constructor(props) {
     super(props);
-    var dataSource = new ListView.DataSource({
+    this.dataSource = new ListView.DataSource({
       rowHasChanged: (row1, row2) => row1 !== row2,
     });
-    dataSource = dataSource.cloneWithRows(this.props.songs);
-    this.state = {
-      dataSource: dataSource,
-      loaded: true,
-    };
   }
 
   render() {
+    this.dataSource = this.dataSource.cloneWithRows(this.props.songs);
     return (<ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderSong}
+        dataSource={this.dataSource}
+        renderRow={this.renderSong.bind(this)}
         style={styles.listView}
       />);
   }
@@ -44,13 +45,21 @@ class SongList extends Component {
     }
 
   renderSong(song) {
-    return (<SongItem song={song} onPress={function() {
+    return (<SongItem song={song} onPress={() => {
+      this.props.changeSong(song);
       Actions.songdetails({song: song});
     }}/>);
   }
 }
 
-module.exports = SongList;
+function mapStateToProps(state) {
+  return {
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(SongPlayerActions, dispatch)
+}
+module.exports = connect(mapStateToProps, mapDispatchToProps)(SongList)
 
 const styles = StyleSheet.create({
   listView: {

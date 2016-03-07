@@ -14,6 +14,8 @@ var {
 
 import FavlyTabBar from '../components/FavlyTabBar';
 import SongListWrapper from '../components/SongListWrapper';
+import RecordingListWrapper from '../components/RecordingListWrapper';
+
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar, } from 'react-native-scrollable-tab-view';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -36,7 +38,7 @@ class Home extends Component {
         renderTabBar={() => <FavlyTabBar />}>
 
         <ScrollView tabLabel="music-note" style={styles.tabView}>
-          <SongListWrapper database={this.database}></SongListWrapper>
+          <SongListWrapper></SongListWrapper>
         </ScrollView>
 
         <ScrollView tabLabel="ios-albums" style={styles.tabView}>
@@ -46,9 +48,7 @@ class Home extends Component {
         </ScrollView>
 
         <ScrollView tabLabel="ios-recording" style={styles.tabView}>
-          <View style={styles.card}>
-            <Text>My Recordings</Text>
-          </View>
+          <RecordingListWrapper></RecordingListWrapper>
         </ScrollView>
 
         <ScrollView tabLabel="more" style={styles.tabView}>

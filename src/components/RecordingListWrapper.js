@@ -9,48 +9,49 @@ var {
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-const SongList = require('./SongList');
-const SongsActions = require('../actions/songs')
 
-class SongListWrapper extends Component {
+const RecordingList = require('./RecordingList');
+const RecordingsActions = require('../actions/recordings')
+
+class RecordingListWrapper extends Component {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    this.props.loadOfflineSongs();
-    this.props.loadOnlineSongs();
+    this.props.loadOfflineRecordings();
   }
 
   render() {
-    if (!this.props.songs) {
+    if (!this.props.recordings) {
       return this.renderLoadingView();
     }
-    return this.renderSongs();
+    return this.renderRecordings();
   }
 
   renderLoadingView() {
     return (
       <View style={styles.container}>
-        <Text>Loading songs...</Text>
+        <Text>No Recordings Yet!</Text>
       </View>
     );
   }
 
-  renderSongs() {
-    return (<SongList songs={this.props.songs}/>);
+  renderRecordings() {
+    return (<RecordingList recordings={this.props.recordings}/>);
   }
 }
 
 function mapStateToProps(state) {
   return {
-    songs: state.songs.songs
+    recordings: state.recordings.recordings
   }
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(SongsActions, dispatch)
+  return bindActionCreators(RecordingsActions, dispatch)
 }
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SongListWrapper)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(RecordingListWrapper)
+
 
 const styles = StyleSheet.create({
   container: {
