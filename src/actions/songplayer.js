@@ -7,6 +7,7 @@ var actions = exports = module.exports
 
 exports.CHANGE_SONG = 'CHANGE_SONG'
 
+exports.REFRESH_SONG = 'REFRESH_SONG'
 exports.PLAY_SONG = 'PLAY_SONG'
 exports.PAUSE_SONG = 'PAUSE_SONG'
 

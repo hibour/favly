@@ -1,5 +1,7 @@
 const {
   CHANGE_SONG,
+
+  REFRESH_SONG,
   PLAY_SONG,
   PAUSE_SONG,
 
@@ -27,6 +29,15 @@ const songplayer = (state = initialState, action) => {
         currentSong: action.song,
         currentTime: 0,
         currentDuration: 0,
+      }
+
+    case REFRESH_SONG:
+      if (state.currentSong.id != action.song.id) {
+        return state;
+      }
+      return {
+        ...state,
+        currentSong: action.song
       }
 
     case PLAY_SONG:

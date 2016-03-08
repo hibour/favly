@@ -51,10 +51,12 @@ exports.loadOnlineSongs = function loadOnlineSongs() {
   }
 }
 
-function dispatchSongUpdates(dispatch, action, refreshCurrentSong) {
+function dispatchSongUpdates(dispatch, action, refreshCurrentSong, getState) {
   dispatch(action);
   if (refreshCurrentSong) {
-    dispatch({type: SongPlayerActions.CHANGE_SONG, id: action.id});
+    var state = getState();
+    var song = state.songs.songs[action.id];
+    dispatch({type: SongPlayerActions.REFRESH_SONG, song: song});
   }
 }
 
@@ -71,7 +73,7 @@ exports.downloadSong = function downloadSong(song) {
     dispatchSongUpdates(dispatch, {
       type: actions.DOWNLOADING_SONG_ASSETS,
       id: song.id
-    }, isCurrentSong)
+    }, isCurrentSong, getState);
 
     var songPath = Constants.getSongPath(song);
     Cache.getMedia(songPath, song.track, function(data) {
@@ -79,14 +81,14 @@ exports.downloadSong = function downloadSong(song) {
         type: actions.UPDATE_DOWNLOAD_PROGRESS,
         id: song.id,
         progress: 95,
-      }, isCurrentSong)
+      }, isCurrentSong, getState)
       var lyricPath = Constants.getLyricPath(song);
       Cache.getText(lyricPath, song.lyrics, function(data) {
         dispatchSongUpdates(dispatch, {
           type: actions.DOWNLOAD_COMPLETE,
           id: song.id,
           lyricsData: data
-        }, isCurrentSong)
+        }, isCurrentSong, getState)
       });
     });
   }

@@ -43,7 +43,6 @@ class Lyrics extends Component {
       this.createLRCPlayerIfNeeded(this.props.song.lyricsData);
       highlightLine = this.lrcPlayer.findLineAt(this.props.currentTime);
       txts = this.lrcPlayer.txts;
-      console.log(">> Lyrics being rendered ", this.props.currentTime, highlightLine);
     }
 
     return (
