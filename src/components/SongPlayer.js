@@ -31,18 +31,7 @@ class SongPlayer extends Component {
     TimerMixin.componentWillUnmount.call(this);
   }
 
-  getAudioRecordingPath() {
-    return '/' + this.props.song._key + '.caf';
-  }
-
   initAudioRecorder() {
-    AudioRecorder.prepareRecordingAtPath(this.getAudioRecordingPath());
-    // AudioRecorder.onProgress = (data) => {
-    //   this.setState({currentTime: Math.floor(data.currentTime)});
-    // };
-    AudioRecorder.onFinished = (data) => {
-      console.log(`>>>>> Finished recording: ${data.finished}`)
-    };
     TimerMixin.setInterval(this.syncCurrentTime.bind(this), 1000);
   }
 
@@ -58,14 +47,14 @@ class SongPlayer extends Component {
        </TouchableOpacity>);
     }
 
-  _renderPlayerControls(song, songSound) {
+  _renderPlayerControls(song) {
     return (<View style={styles.header}>
               <View style={styles.songDetails}>
                 <Text style={styles.trackTitle}>{song.title}</Text>
                 <Text style={styles.trackAlbum}>{song.album}</Text>
               </View>
               <View style={styles.playerControls}>
-                <Text style={styles.timers}>{this._getSoundTimer(songSound)}</Text>
+                <Text style={styles.timers}>{this._getSoundTimer()}</Text>
                 {this._renderToggleButton({off: 'record', on: 'pause'},
                   {off: 'recordIcon', on: 'pauseIcon'},
                   this.playPause.bind(this), this.props.isPlaying, 60)}
@@ -81,27 +70,20 @@ class SongPlayer extends Component {
   }
 
   render() {
-    return (this._renderPlayerControls(this.props.song, this.props.songSound));
+    return (this._renderPlayerControls(this.props.song));
   }
 
   playPause() {
-    var songSound = this.props.songSound;
-    if (!songSound) {
-      return;
-    }
-
     if (this.props.isPlaying) {
-      songSound.pause();
-      AudioRecorder.pauseRecording();
+      this.props.pauseSong();
     } else {
+      this.props.playSong();
       // Recording is not started. lets start it.
       if (!this.props.isRecording) {
         this.initAudioRecorder();
-        AudioRecorder.startRecording();
+        this.props.startRecording();
       }
-      songSound.play();
     }
-    this.props.startOrPauseRecording();
   }
 
   toggleMute() {
@@ -109,30 +91,21 @@ class SongPlayer extends Component {
   }
 
   stop() {
-    AudioRecorder.stopRecording();
-    //AudioRecorder.playRecording();
-    this.props.songSound.stop();
     this.props.stopRecording();
-    this.props.addRecording({
-      path: this.getAudioRecordingPath(),
-      title: this.props.song.title,
-      songid: this.props.song._key,
-      time: moment().toISOString()});
   }
 
-  _getSoundTimer(songSound) {
-    if (!songSound) {
-      return '--/--';
+  _getSoundTimer() {
+    if (!this.props.songSound) {
+      return;
     }
     return moment.utc(this.props.currentTime).format("mm:ss") + '/' +
-      moment.utc(songSound.getDuration() * 1000).format("mm:ss");
+      moment.utc(this.props.songSound.getDuration() * 1000).format("mm:ss");
   }
 
   syncCurrentTime() {
-    if (!this.props.isRecording) {
+    if (!this.props.songSound) {
       return;
     }
-    console.log(">>> Sync current time2");
     this.props.songSound.getCurrentTime((val) => this.props.setCurrentTime(val * 1000));
   }
 }
@@ -142,8 +115,10 @@ function mapStateToProps(state) {
     isPlaying: state.songplayer.isPlaying,
     isRecording: state.songplayer.isRecording,
     isMute: state.songplayer.isMute,
+
     currentTime: state.songplayer.currentTime,
     song: state.songplayer.currentSong,
+    songSound: state.songplayer.songSound,
   }
 }
 function mapDispatchToProps(dispatch) {

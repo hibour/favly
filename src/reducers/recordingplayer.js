@@ -1,6 +1,7 @@
 const {
   CHANGE_RECORDING,
-  PLAY_PAUSE_RECORDING,
+  PLAY_RECORDING,
+  PAUSE_RECORDING,
   SET_RECORDING_CURRENT_TIME
 } = require('../actions/recordingplayer')
 
@@ -17,11 +18,18 @@ const recordingplayer = (state = initialState, action) => {
         ...state,
         currentRecording: action.recording
       }
-    case PLAY_PAUSE_RECORDING:
+    case PLAY_RECORDING:
       return {
         ...state,
-        isPlaying: !state.isPlaying,
+        isPlaying: true,
       }
+
+    case PAUSE_RECORDING:
+      return {
+        ...state,
+        isPlaying: false,
+      }
+
     case SET_RECORDING_CURRENT_TIME:
       return {
         ...state,

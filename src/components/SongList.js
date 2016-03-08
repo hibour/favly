@@ -47,7 +47,7 @@ class SongList extends Component {
   renderSong(song) {
     return (<SongItem song={song} onPress={() => {
       this.props.changeSong(song);
-      Actions.songdetails({song: song});
+      Actions.songdetails();
     }}/>);
   }
 }

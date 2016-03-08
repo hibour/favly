@@ -17,13 +17,6 @@ exports.loadOfflineRecordings = function loadOfflineRecordings() {
   }
 }
 
-exports.addRecording = function addItem(recording) {
-  return {
-    type: actions.ADD_RECORDING,
-    recording: recording
-  }
-}
-
 exports.removeRecording = function removeItem(id) {
   return {
     type: actions.REMOVE_RECORDING,

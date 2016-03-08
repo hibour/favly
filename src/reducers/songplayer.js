@@ -1,6 +1,9 @@
 const {
   CHANGE_SONG,
-  START_PAUSE_RECORDING,
+  PLAY_SONG,
+  PAUSE_SONG,
+
+  START_RECORDING,
   STOP_RECORDING,
   TOGGLE_MUTE,
   SET_CURRENT_TIME
@@ -13,6 +16,7 @@ const initialState = {
 
   currentSong: {},
   currentTime: 0,
+  songSound: null,
 }
 
 const songplayer = (state = initialState, action) => {
@@ -20,14 +24,30 @@ const songplayer = (state = initialState, action) => {
     case CHANGE_SONG:
       return {
         ...state,
-        currentSong: action.song
+        currentSong: action.song,
+        currentTime: 0,
+        songSound: null
       }
-    case START_PAUSE_RECORDING:
+
+    case PLAY_SONG:
       return {
         ...state,
-        isPlaying: !state.isPlaying,
-        isRecording: true
+        isPlaying: true,
+        songSound: action.songSound,
       }
+
+    case PAUSE_SONG:
+      return {
+        ...state,
+        isPlaying: false,
+      }
+
+    case START_RECORDING:
+      return {
+        ...state,
+        isRecording: true,
+      }
+
     case STOP_RECORDING:
       return {
         ...state,

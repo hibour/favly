@@ -70,12 +70,10 @@ class RecordingPlayer extends Component {
 
   playPause() {
     if (this.props.isPlaying) {
-      AudioPlayer.pause();
+      this.props.pauseRecording();
     } else {
-      console.log(">>>> Play audio at ", this.props.recording.path);
-      AudioPlayer.play(this.props.recording.path);
+      this.props.playRecording();
     }
-    this.props.playOrPauseRecording();
   }
 }
 

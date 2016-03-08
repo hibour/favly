@@ -20,21 +20,14 @@ class Lyrics extends Component {
 
   constructor(props) {
     super(props);
-    this.createLRCPlayerIfNeeded(this.props.lyrics);
     this.state = {
-      lyricsParsed: false,
-      currentPosition: 0
+      lyricsParsed: false
     };
   }
 
   outputHandler(line, extra) {
     if(!line){ return }
     console.log(line);
-    this.updateState({currentPosition: {$set: extra.lineNum}});
-  }
-
-  updateState(state) {
-    this.setState(React.addons.update(this.state, state));
   }
 
   createLRCPlayerIfNeeded(lyricData) {
@@ -43,19 +36,24 @@ class Lyrics extends Component {
     }
     InteractionManager.runAfterInteractions(function() {
       this.lrcPlayer = new LRC.Lrc(lyricData, this.outputHandler.bind(this));
-      this.updateState({lyricsParsed: {$set: true}});
+      this.setState({
+        ...this.state,
+        lyricsParsed: true
+      });
     }.bind(this));
   }
 
   render() {
-    this.createLRCPlayerIfNeeded(this.props.lyrics);
-
     var txts = ['Loading'];
     var highlightLine = 0;
-    if (this.state.lyricsParsed) {
-      highlightLine = this.lrcPlayer.findLineAt(this.props.currentTime);
-      txts = this.lrcPlayer.txts;
-      console.log(">> Lyrics being rendered ", this.props.currentTime, highlightLine);
+
+    if (this.props.song.isLoaded) {
+      this.createLRCPlayerIfNeeded(this.props.song.lyricsData);
+      if (this.state.lyricsParsed) {
+        highlightLine = this.lrcPlayer.findLineAt(this.props.currentTime);
+        txts = this.lrcPlayer.txts;
+        console.log(">> Lyrics being rendered ", this.props.currentTime, highlightLine);
+      }
     }
 
     return (

@@ -23,7 +23,7 @@ class SongListWrapper extends Component {
   }
 
   render() {
-    if (!this.props.songs) {
+    if (!this.props.songList || this.props.songList.length == 0) {
       return this.renderLoadingView();
     }
     return this.renderSongs();
@@ -38,13 +38,13 @@ class SongListWrapper extends Component {
   }
 
   renderSongs() {
-    return (<SongList songs={this.props.songs}/>);
+    return (<SongList songs={this.props.songList}/>);
   }
 }
 
 function mapStateToProps(state) {
   return {
-    songs: state.songs.songs
+    songList: state.songs.songList
   }
 }
 function mapDispatchToProps(dispatch) {
