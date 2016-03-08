@@ -70,10 +70,11 @@ class SongDetails extends Component {
   }
 
   renderDownloadState(song) {
-    if (song.isDownloading) {
-      return this.renderDownloadingView(song);
-    } else if (song.isLoaded) {
+    console.log(">>>>> Rendering download state... ", song.id, song.isLoaded);
+    if (song.isLoaded) {
       return this.renderLyricView(song);
+    } else {
+      return this.renderDownloadingView(song);
     }
   }
 
@@ -95,7 +96,7 @@ class SongDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    song: state.songplayer.currentSong,
+    song: state.songplayer.currentSong
   }
 }
 function mapDispatchToProps(dispatch) {

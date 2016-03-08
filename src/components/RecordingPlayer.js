@@ -19,16 +19,10 @@ const Icon = require('react-native-vector-icons/Ionicons');
 const CommonStyle = require('../css/common.js')
 const moment = require('moment');
 
-var {AudioPlayer} = require('react-native-audio');
-
 class RecordingPlayer extends Component {
 
   constructor(props) {
     super(props);
-  }
-
-  componentWillUnmount() {
-    TimerMixin.componentWillUnmount.call(this);
   }
 
   _renderToggleButton(icons, style, onPress, isOn, size) {

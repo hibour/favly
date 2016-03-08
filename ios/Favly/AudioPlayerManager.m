@@ -86,6 +86,7 @@ RCT_EXPORT_METHOD(play:(NSString *)path options:(NSDictionary *)options)
 
   NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
   NSString *audioFilePath = [resourcePath stringByAppendingPathComponent:path];
+  audioFilePath = path;
 
   NSString *sessionCategory = [RCTConvert NSString:options[@"sessionCategory"]];
 
@@ -114,7 +115,7 @@ RCT_EXPORT_METHOD(play:(NSString *)path options:(NSDictionary *)options)
 
   if (error) {
     [self stopProgressTimer];
-    NSLog(@"audio playback loading error: %@", [error localizedDescription]);
+    NSLog(@"audio playback loading error: %@ %@", audioFilePath, [error localizedDescription]);
     // TODO: dispatch error over the bridge
   } else {
     [self startProgressTimer];

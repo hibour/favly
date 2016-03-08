@@ -12,9 +12,7 @@ var Cache = {
   },
 
   getData: function(path, url, encoding, onSuccess, onFailure) {
-    console.log(">>> Trying to get data from ", path);
     RNFS.stat(path).then((statResult) => {
-      console.log(">> stat result ", statResult);
       if (statResult.isFile()) {
         console.log(">>> Found the file at ", path);
         // if we have a file, read it
@@ -40,7 +38,7 @@ var Cache = {
   downloadMedia: function(path, url, encoding, onSuccess, onFailure) {
     console.log(">> Downloading from ", url);
     RNFS.downloadFile(url, path).then((stateResult) => {
-      console.log("Successfully downloaded ?", stateResult);
+      console.log("Successfully downloaded");
       this.getData(path, url, encoding, onSuccess, onFailure);
     });
   }

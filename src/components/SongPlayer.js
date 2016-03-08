@@ -13,26 +13,15 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 const SongPlayerActions = require('../actions/songplayer')
 const RecordingsActions = require('../actions/recordings')
-import TimerMixin from 'react-timer-mixin';
 
 const Icon = require('react-native-vector-icons/Ionicons');
 const CommonStyle = require('../css/common.js')
 const moment = require('moment');
 
-var {AudioRecorder} = require('react-native-audio');
-
 class SongPlayer extends Component {
 
   constructor(props) {
     super(props);
-  }
-
-  componentWillUnmount() {
-    TimerMixin.componentWillUnmount.call(this);
-  }
-
-  initAudioRecorder() {
-    TimerMixin.setInterval(this.syncCurrentTime.bind(this), 1000);
   }
 
   _renderToggleButton(icons, style, onPress, isOn, size) {
@@ -80,7 +69,6 @@ class SongPlayer extends Component {
       this.props.playSong();
       // Recording is not started. lets start it.
       if (!this.props.isRecording) {
-        this.initAudioRecorder();
         this.props.startRecording();
       }
     }
@@ -95,18 +83,8 @@ class SongPlayer extends Component {
   }
 
   _getSoundTimer() {
-    if (!this.props.songSound) {
-      return;
-    }
     return moment.utc(this.props.currentTime).format("mm:ss") + '/' +
-      moment.utc(this.props.songSound.getDuration() * 1000).format("mm:ss");
-  }
-
-  syncCurrentTime() {
-    if (!this.props.songSound) {
-      return;
-    }
-    this.props.songSound.getCurrentTime((val) => this.props.setCurrentTime(val * 1000));
+      moment.utc(this.props.currentDuration).format("mm:ss");
   }
 }
 
@@ -117,8 +95,8 @@ function mapStateToProps(state) {
     isMute: state.songplayer.isMute,
 
     currentTime: state.songplayer.currentTime,
+    currentDuration: state.songplayer.currentDuration,
     song: state.songplayer.currentSong,
-    songSound: state.songplayer.songSound,
   }
 }
 function mapDispatchToProps(dispatch) {

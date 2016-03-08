@@ -1,5 +1,4 @@
-var { AudioRecorder, AudioPlayer } = require('react-native-audio');
-var Sound = require('react-native-sound');
+var { AudioRecorder, AudioPlayer } = require('../Audio');
 const moment = require('moment');
 import Constants from '../utils/constants.js'
 import RecordingsActions from './recordings'
@@ -27,34 +26,36 @@ exports.changeSong = function changeSong(song) {
 exports.playSong = function playSong() {
   return (dispatch, getState) => {
     var songplayer = getState().songplayer;
-    var songSound = songplayer.songSound;
-
-    if (songSound) {
-      songSound.play();
-
+    if (songplayer.currentTime != 0) {
+      AudioPlayer.unpause();
       // If we are also recording, play recording. we might have paused it.
       if (songplayer.isRecording) {
         AudioRecorder.startRecording();
       }
       dispatch({
-        type: actions.PLAY_SONG,
-        songSound: songSound
+        type: actions.PLAY_SONG
       });
     } else {
-
       var song = songplayer.currentSong;
-      var songPath = Constants.getSongPath(song);
-      songSound = new Sound(songPath, '', function(error) {
-        if (error) {
-          console.log('failed to load the sound', error);
-        } else { // loaded successfully
-          songSound.play();
-          dispatch({
-            type: actions.PLAY_SONG,
-            songSound: songSound
-          });
-        }
+      AudioPlayer.play(Constants.getSongPath(song),
+        {sessionCategory: 'PlayAndRecord'});
+
+      dispatch({
+        type: actions.PLAY_SONG
       })
+
+      AudioPlayer.onProgress = (data) => {
+        dispatch({
+          type: actions.SET_CURRENT_TIME,
+          duration: data.currentDuration * 1000,
+          time: data.currentTime * 1000
+        })
+      };
+      AudioPlayer.onFinished = (data) => {
+        actions.stopRecording();
+      };
+      AudioPlayer.setProgressSubscription();
+      AudioPlayer.setFinishedSubscription();
     }
   }
 }
@@ -62,10 +63,8 @@ exports.playSong = function playSong() {
 exports.pauseSong = function pauseSong() {
   return (dispatch, getState) => {
     var songplayer = getState().songplayer;
-    var songSound = songplayer.songSound;
-    if (songSound) {
-      songSound.pause();
-
+    if (songplayer.isPlaying) {
+      AudioPlayer.pause();
       // If we are also recording, pause recording.
       if (songplayer.isRecording) {
         AudioRecorder.pauseRecording();
@@ -85,6 +84,7 @@ exports.startRecording = function startRecording() {
         Constants.getRecordingPath(songplayer.currentSong),
         {SampleRate: 22050.0, Channels: 2, AudioQuality: 'Medium', AudioEncoding: 'mp3', }
       );
+      AudioRecorder.startRecording();
       dispatch({
         type: actions.START_RECORDING
       })
@@ -95,12 +95,9 @@ exports.startRecording = function startRecording() {
 exports.stopRecording = function stopRecording() {
   return (dispatch, getState) => {
     var songplayer = getState().songplayer;
-    var songSound = songplayer.songSound;
     if (songplayer.isRecording) {
       AudioRecorder.stopRecording();
-      if (songSound) {
-        songSound.stop();
-      }
+      AudioPlayer.stop();
       dispatch({
         type: actions.STOP_RECORDING
       });
@@ -110,7 +107,7 @@ exports.stopRecording = function stopRecording() {
       dispatch({
         type: RecordingsActions.ADD_RECORDING,
         recording: {
-          path: Constants.getRecordingPath(song),
+          path: path,
           title: song.title,
           songid: song.id,
           time: moment().toISOString()

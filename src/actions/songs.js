@@ -3,6 +3,7 @@ import Constants from '../utils/constants.js'
 const Firebase = require('firebase');
 
 var Cache = require('../utils/Cache');
+import SongPlayerActions from './songplayer'
 
 var actions = exports = module.exports
 
@@ -17,7 +18,6 @@ exports.DOWNLOAD_COMPLETE = 'DOWNLOAD_COMPLETE'
 exports.loadOfflineSongs = function loadOfflineSongs() {
   return dispatch => {
     offline.get('songList').then(songs => {
-      console.log(">>> Songs ", songs);
       dispatch({
         type: actions.OFFLINE_SONGS_LOADED,
         songs: songs || []
@@ -51,34 +51,42 @@ exports.loadOnlineSongs = function loadOnlineSongs() {
   }
 }
 
+function dispatchSongUpdates(dispatch, action, refreshCurrentSong) {
+  dispatch(action);
+  if (refreshCurrentSong) {
+    dispatch({type: SongPlayerActions.CHANGE_SONG, id: action.id});
+  }
+}
 
 exports.downloadSong = function downloadSong(song) {
-  return dispatch => {
-
+  return (dispatch, getState) => {
     // If it is already loaded.
     if (song.isLoaded && song.lyricsData) {
       return;
     }
 
-    dispatch({
+    var songplayer = getState().songplayer;
+    var isCurrentSong = songplayer.currentSong.id == song.id;
+
+    dispatchSongUpdates(dispatch, {
       type: actions.DOWNLOADING_SONG_ASSETS,
       id: song.id
-    });
+    }, isCurrentSong)
 
     var songPath = Constants.getSongPath(song);
     Cache.getMedia(songPath, song.track, function(data) {
-      dispatch({
+      dispatchSongUpdates(dispatch, {
         type: actions.UPDATE_DOWNLOAD_PROGRESS,
         id: song.id,
         progress: 95,
-      })
+      }, isCurrentSong)
       var lyricPath = Constants.getLyricPath(song);
       Cache.getText(lyricPath, song.lyrics, function(data) {
-        dispatch({
+        dispatchSongUpdates(dispatch, {
           type: actions.DOWNLOAD_COMPLETE,
           id: song.id,
           lyricsData: data
-        })
+        }, isCurrentSong)
       });
     });
   }

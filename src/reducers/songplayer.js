@@ -16,7 +16,7 @@ const initialState = {
 
   currentSong: {},
   currentTime: 0,
-  songSound: null,
+  currentDuration: 0,
 }
 
 const songplayer = (state = initialState, action) => {
@@ -26,14 +26,13 @@ const songplayer = (state = initialState, action) => {
         ...state,
         currentSong: action.song,
         currentTime: 0,
-        songSound: null
+        currentDuration: 0,
       }
 
     case PLAY_SONG:
       return {
         ...state,
-        isPlaying: true,
-        songSound: action.songSound,
+        isPlaying: true
       }
 
     case PAUSE_SONG:
@@ -54,15 +53,20 @@ const songplayer = (state = initialState, action) => {
         isPlaying: false,
         isRecording: false
       }
+
     case TOGGLE_MUTE:
       return {
         ...state,
         isMute: !state.isMute
       }
+
     case SET_CURRENT_TIME:
+      var duration = action.duration || state.currentDuration;
+      var time = action.time || state.currentTime;
       return {
         ...state,
-        currentTime: action.time
+        currentTime: time,
+        currentDuration: duration
       }
     default:
       return state

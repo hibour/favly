@@ -20,9 +20,6 @@ class Lyrics extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      lyricsParsed: false
-    };
   }
 
   outputHandler(line, extra) {
@@ -34,26 +31,19 @@ class Lyrics extends Component {
     if (this.lrcPlayer || !lyricData) {
       return;
     }
-    InteractionManager.runAfterInteractions(function() {
-      this.lrcPlayer = new LRC.Lrc(lyricData, this.outputHandler.bind(this));
-      this.setState({
-        ...this.state,
-        lyricsParsed: true
-      });
-    }.bind(this));
+    this.lrcPlayer = new LRC.Lrc(lyricData, this.outputHandler);
   }
 
   render() {
     var txts = ['Loading'];
     var highlightLine = 0;
 
+    console.log(">>>> Rendering lyrics ");
     if (this.props.song.isLoaded) {
       this.createLRCPlayerIfNeeded(this.props.song.lyricsData);
-      if (this.state.lyricsParsed) {
-        highlightLine = this.lrcPlayer.findLineAt(this.props.currentTime);
-        txts = this.lrcPlayer.txts;
-        console.log(">> Lyrics being rendered ", this.props.currentTime, highlightLine);
-      }
+      highlightLine = this.lrcPlayer.findLineAt(this.props.currentTime);
+      txts = this.lrcPlayer.txts;
+      console.log(">> Lyrics being rendered ", this.props.currentTime, highlightLine);
     }
 
     return (

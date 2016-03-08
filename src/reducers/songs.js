@@ -86,6 +86,7 @@ function song(state = songInitialState, action) {
         ...state,
         isDownloading: false,
         isLoaded: true,
+        downloadProgress: 100,
         lyricsData: action.lyricsData
       }
     default:

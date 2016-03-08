@@ -14,7 +14,6 @@ var {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-var {AudioPlayer} = require('react-native-audio');
 const RecordingPlayerActions = require('../actions/recordingplayer')
 
 import RecordingItem from './RecordingItem';
