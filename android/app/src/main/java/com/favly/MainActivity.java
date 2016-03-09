@@ -1,7 +1,6 @@
 package com.favly;
 
 import com.facebook.react.ReactActivity;
-import com.zmxv.RNSound.RNSoundPackage;
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactPackage;
@@ -37,10 +36,10 @@ public class MainActivity extends ReactActivity {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-        new RNSoundPackage(),
-        new RNFSPackage(),
-        new VectorIconsPackage()
+                new MainReactPackage(),
+                new RNFSPackage(),
+                new VectorIconsPackage(),
+                new AudioPackage()
         );
     }
 }

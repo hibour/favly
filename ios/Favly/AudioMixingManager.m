@@ -56,8 +56,8 @@ RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
     return;
   }
   
-  [audioTrack setPreferredVolume:0.5];
-  [vocalTrack setPreferredVolume:2];
+  [audioTrack setPreferredVolume:1.0];
+  [vocalTrack setPreferredVolume:0.5];
   
   AVAssetExportSession* exportSession = [[AVAssetExportSession alloc] initWithAsset:composition
                                                                          presetName:AVAssetExportPresetAppleM4A];
