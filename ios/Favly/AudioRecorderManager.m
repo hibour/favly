@@ -69,13 +69,14 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag {
+  NSLog(@"recording finished");
   [self.bridge.eventDispatcher sendAppEventWithName:AudioRecorderEventFinished body:@{
       @"status": flag ? @"OK" : @"ERROR",
       @"audioFileURL": [_audioFileURL absoluteString]
     }];
 }
 
-- (NSString *) applicationDocumentsDirectory
+- (NSString *)applicationDocumentsDirectory
 {
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
@@ -119,10 +120,11 @@ RCT_EXPORT_METHOD(prepareRecordingAtPath:(NSString *)path sampleRate:(float)samp
     _audioSampleRate = [NSNumber numberWithFloat:sampleRate];
 
 
-
+  //NSNumber *_audioEncoding = [NSNumber numberWithInt:kAudioFormatMPEGLayer3];
   NSDictionary *recordSettings = [NSDictionary dictionaryWithObjectsAndKeys:
           _audioQuality, AVEncoderAudioQualityKey,
           [NSNumber numberWithInt:16], AVEncoderBitRateKey,
+          //_audioEncoding, AVFormatIDKey,
           _audioChannels, AVNumberOfChannelsKey,
           _audioSampleRate, AVSampleRateKey,
           nil];
@@ -130,7 +132,11 @@ RCT_EXPORT_METHOD(prepareRecordingAtPath:(NSString *)path sampleRate:(float)samp
   NSError *error = nil;
 
   _recordSession = [AVAudioSession sharedInstance];
-  [_recordSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+  [_recordSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
+  if (error) {
+    NSLog(@"audioSession setCategory: %@ %@", [error domain], [[error userInfo] description]);
+    return;
+  }
 
   _audioRecorder = [[AVAudioRecorder alloc]
                 initWithURL:_audioFileURL
@@ -140,20 +146,30 @@ RCT_EXPORT_METHOD(prepareRecordingAtPath:(NSString *)path sampleRate:(float)samp
   _audioRecorder.delegate = self;
 
   if (error) {
-      NSLog(@"error: %@", [error localizedDescription]);
+      NSLog(@"recorder setup error: %@", [error localizedDescription]);
       // TODO: dispatch error over the bridge
     } else {
-      [_audioRecorder prepareToRecord];
+      if (![_audioRecorder prepareToRecord]) {
+        NSLog(@"recorder preparation is failed");
+      }
   }
 }
 
 RCT_EXPORT_METHOD(startRecording)
 {
   if (!_audioRecorder.recording) {
+    NSError *err = nil;
+    [_recordSession setActive:YES error:&err];
+    if (err) {
+      NSLog(@"audioSession setActive: %@ %@", [err domain], [[err userInfo] description]);
+      return;
+    }
+    if (![_audioRecorder record]) {
+      NSLog(@"audioRecorder record failed");
+      return;
+    }
     [self startProgressTimer];
-    [_recordSession setActive:YES error:nil];
-    [_audioRecorder record];
-
+    NSLog(@"Started recording.. %d", _audioRecorder.recording);
   }
 }
 

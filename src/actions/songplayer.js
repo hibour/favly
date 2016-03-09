@@ -1,4 +1,4 @@
-var { AudioRecorder, AudioPlayer } = require('../Audio');
+var { AudioRecorder, AudioPlayer, AudioMixer } = require('../Audio');
 const moment = require('moment');
 import Constants from '../utils/constants.js'
 import RecordingsActions from './recordings'
@@ -83,7 +83,7 @@ exports.startRecording = function startRecording() {
     if (!songplayer.isRecording) {
       AudioRecorder.prepareRecordingAtPath(
         Constants.getRecordingPath(songplayer.currentSong),
-        {SampleRate: 22050.0, Channels: 2, AudioQuality: 'Medium', AudioEncoding: 'mp3', }
+        {SampleRate: 44100.0, Channels: 2, AudioQuality: 'High' }
       );
       AudioRecorder.startRecording();
       dispatch({
@@ -97,23 +97,40 @@ exports.stopRecording = function stopRecording() {
   return (dispatch, getState) => {
     var songplayer = getState().songplayer;
     if (songplayer.isRecording) {
+
+      AudioRecorder.onFinished = function(data) {
+        if (data.status != 'OK') {
+          console.log(">>> Recording failed ", data);
+          // TODO handle this failure.
+          return;
+        }
+        songplayer = getState().songplayer;
+        var song = songplayer.currentSong;
+
+        var recordingPath = data.audioFileURL.substring(7);
+        var path = Constants.getFinalRecordPath(song, new Date());
+        AudioMixer.mixAudio(Constants.getSongPath(song),
+          recordingPath,
+          path,
+          (error, success) => {
+            console.log(">>> Mixing result ", error, success);
+            dispatch({
+              type: RecordingsActions.ADD_RECORDING,
+              recording: {
+                path: path,
+                title: song.title,
+                songid: song.id,
+                time: moment().toISOString()
+              }
+            })
+          })
+      };
+
       AudioRecorder.stopRecording();
       AudioPlayer.stop();
       dispatch({
         type: actions.STOP_RECORDING
       });
-
-      var song = songplayer.currentSong;
-      var path = Constants.getRecordingAbsolutePath(Constants.getRecordingPath(song));
-      dispatch({
-        type: RecordingsActions.ADD_RECORDING,
-        recording: {
-          path: path,
-          title: song.title,
-          songid: song.id,
-          time: moment().toISOString()
-        }
-      })
     }
   }
 }

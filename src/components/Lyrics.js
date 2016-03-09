@@ -37,8 +37,6 @@ class Lyrics extends Component {
   render() {
     var txts = ['Loading'];
     var highlightLine = 0;
-
-    console.log(">>>> Rendering lyrics ");
     if (this.props.song.isLoaded) {
       this.createLRCPlayerIfNeeded(this.props.song.lyricsData);
       highlightLine = this.lrcPlayer.findLineAt(this.props.currentTime);

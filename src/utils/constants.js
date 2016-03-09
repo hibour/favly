@@ -13,8 +13,9 @@ var Constants = {
   getRecordingPath: function(song) {
     return '/' + song.id + '.caf';
   },
-  getRecordingAbsolutePath: function(path) {
-    return RNFS.DocumentDirectoryPath + path;
-  }
+  getFinalRecordPath: function(song, date) {
+    var songDir = RNFS.DocumentDirectoryPath + '/';
+    return songDir + song.id + '_' + Math.floor(date.getTime()/1000) + '.m4a';
+  },
 }
 module.exports = Constants;

@@ -9,6 +9,7 @@ var React, {NativeModules, NativeAppEventEmitter, DeviceEventEmitter} = require(
 
 var AudioPlayerManager = NativeModules.AudioPlayerManager;
 var AudioRecorderManager = NativeModules.AudioRecorderManager;
+var AudioMixingManager = NativeModules.AudioMixingManager;
 
 var AudioPlayer = {
   play: function(path, options) {
@@ -138,4 +139,14 @@ var AudioRecorder = {
   }
 };
 
-module.exports = {AudioPlayer, AudioRecorder};
+var AudioMixer = {
+  mixAudio: function(path1, path2, path3, callback) {
+    AudioMixingManager.mixAudio(path1, path2, path3, (error, success) => {
+      if (callback) {
+        callback(error, success);
+      }
+    })
+  }
+}
+
+module.exports = {AudioPlayer, AudioRecorder, AudioMixer};

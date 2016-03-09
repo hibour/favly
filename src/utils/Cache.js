@@ -30,7 +30,7 @@ var Cache = {
       }
     })
     .catch((err) => {
-      console.log(">> Probably file doesnt exist ", err.message, err.code, err);
+      console.log(">> Probably file doesnt exist ", err.message);
       this.downloadMedia(path, url, encoding, onSuccess, onFailure);
     })
   },
