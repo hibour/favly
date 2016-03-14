@@ -62,7 +62,7 @@ RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
                   withCallback:(RCTResponseSenderBlock)callback)
 {
   NSLog(@"Starting mix audio..");
-  NSMutableArray *audioMixParams = [NSMutableArray init];
+  NSMutableArray *audioMixParams = [[NSMutableArray alloc] init];
   
   // Generate a composition of the two audio assets that will be combined into
   // a single track

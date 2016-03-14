@@ -41,12 +41,6 @@ class Home extends Component {
           <SongListWrapper></SongListWrapper>
         </ScrollView>
 
-        <ScrollView tabLabel="ios-albums" style={styles.tabView}>
-          <View style={styles.card}>
-            <Text>Albums</Text>
-          </View>
-        </ScrollView>
-
         <ScrollView tabLabel="ios-recording" style={styles.tabView}>
           <RecordingListWrapper></RecordingListWrapper>
         </ScrollView>
