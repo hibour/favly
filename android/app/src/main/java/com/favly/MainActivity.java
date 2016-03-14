@@ -1,6 +1,7 @@
 package com.favly;
 
 import com.facebook.react.ReactActivity;
+import com.microsoft.codepush.react.CodePushReactPackage;
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactPackage;
@@ -37,6 +38,7 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+        new CodePushReactPackage(),
                 new RNFSPackage(),
                 new VectorIconsPackage(),
                 new AudioPackage()

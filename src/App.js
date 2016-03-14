@@ -11,7 +11,7 @@ var Login = require('./pages/Login');
 var Home = require('./pages/Home');
 var SongDetails = require('./pages/SongDetails');
 
-import { createStore, bindActionCreators } from 'redux'
+import codePush from "react-native-code-push";
 import { Provider, connect } from 'react-redux'
 const configureStore = require('./store/configureStore')
 
@@ -19,6 +19,9 @@ const store = configureStore();
 const Router = connect()(RNRF.Router);
 
 class App extends Component {
+    componentDidMount() {
+      codePush.sync();
+    }
     render() {
         return (
             <Provider store={store}>

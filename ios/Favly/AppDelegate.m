@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 
 #import "RCTRootView.h"
+#import "CodePush.h"
 
 @implementation AppDelegate
 
@@ -30,8 +31,9 @@
    * `inet` value under `en0:`) and make sure your computer and iOS device are
    * on the same Wi-Fi network.
    */
-
-  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.103:8081/index.ios.bundle?platform=ios&dev=true"];
+#ifdef DEBUG
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.100:8081/index.ios.bundle?platform=ios&dev=true"];
+#else
 
   /**
    * OPTION 2
@@ -40,6 +42,9 @@
    */
 
 //   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  jsCodeLocation = [CodePush bundleURL];
+#endif
+
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"Favly"

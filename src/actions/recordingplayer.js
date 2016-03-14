@@ -20,7 +20,7 @@ exports.playRecording = function playRecording() {
     var recording = recordingplayer.currentRecording;
     if (recording) {
       console.log(">>>> Playing recording from ", recording.path);
-      AudioPlayer.play(recording.path);
+      AudioPlayer.play(recording.path, {sessionCategory: 'Playback'});
 
       AudioPlayer.onProgress = (data) => {
         dispatch({

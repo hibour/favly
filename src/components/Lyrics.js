@@ -7,6 +7,7 @@ var {
   TouchableOpacity,
   Component,
   InteractionManager,
+  ListView,
 } = React;
 
 import { bindActionCreators } from 'redux'
@@ -20,6 +21,9 @@ class Lyrics extends Component {
 
   constructor(props) {
     super(props);
+    this.dataSource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2,
+    });
   }
 
   outputHandler(line, extra) {
@@ -32,22 +36,26 @@ class Lyrics extends Component {
       return;
     }
     this.lrcPlayer = new LRC.Lrc(lyricData, this.outputHandler);
+    this.dataSource = this.dataSource.cloneWithRows(this.lrcPlayer.txts);
   }
 
   render() {
-    var txts = ['Loading'];
-    var highlightLine = 0;
     if (this.props.song.isLoaded) {
       this.createLRCPlayerIfNeeded(this.props.song.lyricsData);
-      highlightLine = this.lrcPlayer.findLineAt(this.props.currentTime);
-      txts = this.lrcPlayer.txts;
+      var highlightLine = Math.max(this.lrcPlayer.findLineAt(this.props.currentTime) - 1, 0);
+      var scrollTo = {x: 0, y: highlightLine * 46, animated: true};
+      return (
+        <ListView ref={(scrollView) => {
+            if (scrollView) {
+              scrollView.scrollTo(scrollTo);
+            }
+          }
+        }
+          dataSource={this.dataSource}
+          renderRow={(rowData) => <Text style={styles.lyricLine}>{rowData}</Text>}
+        />
+      );
     }
-
-    return (
-        <View style={styles.container}>
-          <Text style={styles.lyricLine}>{txts[highlightLine]}</Text>
-        </View>
-    );
   }
 }
 
@@ -74,6 +82,7 @@ const styles = StyleSheet.create({
 
   lyricLine: {
     fontSize: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    height: 46
   },
 });
