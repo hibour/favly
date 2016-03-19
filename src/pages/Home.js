@@ -81,9 +81,4 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3,
   },
-  icon: {
-    width: 300,
-    height: 300,
-    alignSelf: 'center',
-  },
 });

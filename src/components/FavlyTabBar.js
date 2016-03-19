@@ -105,7 +105,7 @@ var styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     top: 0,
-    left: 32,
+    left: 64,
     color: '#CCC',
   },
   selectedIcon: {

@@ -22,6 +22,7 @@ const songInitialState = {
   version: 0,
 
   lyricsData: null,
+  lrcPlayer: null,
 
   isLoaded: false,
   isDownloading: false,
@@ -31,30 +32,32 @@ const songInitialState = {
 function song(state = songInitialState, action) {
   switch (action.type) {
     case 'ADD_LOCAL_SONG':
+      var song = action.song;
       if (state.id) {
         return {
           ...state,
-          isLoaded: action.song.isLoaded,
-          lyricsData: action.song.lyricsData
+          isLoaded: song.isLoaded,
+          lyricsData: song.lyricsData
         }
       } else {
-        return action.song;
+        return song;
       }
 
     case 'ADD_SERVER_SONG':
-      if (state.version != action.song.version) {
-        return action.song;
+    var song = action.song;
+      if (state.version != song.version) {
+        return song;
       } else {
         return {
           ...state,
-          id: action.song.id,
-          title: action.song.title,
-          album: action.song.album,
-          year: action.song.year,
-          thumbnail: action.song.thumbnail,
-          track: action.song.track,
-          lyrics: action.song.lyrics,
-          version: action.song.version
+          id: song.id,
+          title: song.title,
+          album: song.album,
+          year: song.year,
+          thumbnail: song.thumbnail,
+          track: song.track,
+          lyrics: song.lyrics,
+          version: song.version
         }
       }
 

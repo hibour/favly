@@ -97,7 +97,7 @@ exports.stopRecording = function stopRecording() {
   return (dispatch, getState) => {
     var songplayer = getState().songplayer;
     if (songplayer.isRecording) {
-
+      console.log(">>> Going to stop the recording");
       AudioRecorder.onFinished = function(data) {
         if (data.status != 'OK') {
           console.log(">>> Recording failed ", data);
@@ -107,22 +107,26 @@ exports.stopRecording = function stopRecording() {
         songplayer = getState().songplayer;
         var song = songplayer.currentSong;
 
-        var recordingPath = data.audioFileURL.substring(7);
         var path = Constants.getFinalRecordPath(song, new Date());
         AudioMixer.mixAudio(Constants.getSongPath(song),
-          recordingPath,
+          data.audioFileURL,
           path,
           (error, success) => {
-            console.log(">>> Mixing result ", error, success);
-            dispatch({
-              type: RecordingsActions.ADD_RECORDING,
-              recording: {
-                path: path,
-                title: song.title,
-                songid: song.id,
-                time: moment().toISOString()
-              }
-            })
+            if (!error) {
+              console.log(">>> No Error, Yaay! ", success);
+              dispatch({
+                type: RecordingsActions.ADD_RECORDING,
+                recording: {
+                  path: path,
+                  title: song.title,
+                  songid: song.id,
+                  time: moment().toISOString()
+                }
+              })
+            } else {
+              console.log(">>> Failed :( ", error, success);
+              //TODO Show error to the user.
+            }
           })
       };
 

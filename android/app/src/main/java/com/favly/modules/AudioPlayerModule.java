@@ -37,9 +37,6 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
 
     public AudioPlayerModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setOnCompletionListener(this);
-        mMediaPlayer.setOnPreparedListener(this);
         mProgressHandler = new ProgressHandler(Looper.getMainLooper());
     }
 
@@ -51,10 +48,22 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
     @ReactMethod
     public void play(String path) {
         try {
+            if (mMediaPlayer != null) {
+                if (mMediaPlayer.isPlaying()) {
+                    mMediaPlayer.stop();
+                }
+                mMediaPlayer.release();
+            }
+
+            mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setOnCompletionListener(this);
+            mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.setDataSource(getReactApplicationContext(), Uri.parse(path));
             mMediaPlayer.prepare();
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to load the audio file ", ioe);
+        } catch (IllegalStateException ise) {
+            Log.e(TAG, "Failed to load the audio file " + ise.getMessage(), ise);
         }
     }
 

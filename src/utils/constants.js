@@ -1,3 +1,4 @@
+var { Platform } = require('react-native');
 var RNFS = require('react-native-fs');
 var Constants = {
   FIREBASEURL: 'https://shining-fire-6281.firebaseio.com/',
@@ -10,12 +11,24 @@ var Constants = {
     var songDir = RNFS.CachesDirectoryPath + '/' + song.id;
     return songDir + '_v' + song.version + '___lyric.txt';
   },
+
   getRecordingPath: function(song) {
-    return '/' + song.id + '.caf';
+    var base = '/' + song.id;
+    if (Platform.OS == 'ios') {
+      return  base + '.caf';
+    } else {
+      return base + '.m4a';
+    }
   },
+
   getFinalRecordPath: function(song, date) {
-    var songDir = RNFS.DocumentDirectoryPath + '/';
-    return songDir + song.id + '_' + Math.floor(date.getTime()/1000) + '.m4a';
+    var songDir = RNFS.CachesDirectoryPath + '/';
+    var base = songDir + song.id + '_' + Math.floor(date.getTime()/1000);
+    if (Platform.OS == 'ios') {
+      return base + '.m4a';
+    } else {
+      return base + '.wav';
+    }
   },
 }
 module.exports = Constants;

@@ -117,6 +117,10 @@ var AudioRecorder = {
     this.finishedSubscription = NativeAppEventEmitter.addListener('recordingFinished',
       (data) => {
         if (this.onFinished) {
+          // Strip off file://
+          if (data.audioFileURL) {
+            data.audioFileURL = data.audioFileURL.substring(7);
+          }
           this.onFinished(data);
         }
       }

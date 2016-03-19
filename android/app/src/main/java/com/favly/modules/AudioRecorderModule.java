@@ -1,44 +1,41 @@
 package com.favly.modules;
 
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.RCTNativeAppEventEmitter;
+import com.github.lassana.recorder.AudioRecorder;
+import com.github.lassana.recorder.AudioRecorderBuilder;
 
-import java.io.IOException;
+import java.io.File;
 
 /**
  * Created by nageswara on 3/8/16.
  */
-public class AudioRecorderModule extends ReactContextBaseJavaModule implements MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnPreparedListener {
+public class AudioRecorderModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = "AudioRecorderModule";
 
-    private static final String PLAYER_PROGRESS = "playerProgress";
-    private static final String PLAYER_FINISHED = "playerFinished";
+    private static final String RECORDING_FINISHED = "recordingFinished";
+    private static final String RECORDING_PROGRESS = "recordingProgress";
 
-    MediaRecorder mMediaRecorder;
-    ProgressHandler mProgressHandler;
+    AudioRecorder mRecorder;
+    AudioRecorder.MediaRecorderConfig mConfig;
+    ReactApplicationContext mReactContext;
 
     public AudioRecorderModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        mMediaRecorder = new MediaRecorder();
-        mProgressHandler = new ProgressHandler(Looper.getMainLooper());
+        mReactContext = reactContext;
+        mConfig = new AudioRecorder.MediaRecorderConfig(48 * 1024, 2,
+                MediaRecorder.AudioSource.DEFAULT, MediaRecorder.AudioEncoder.AAC);
     }
 
     @Override
@@ -48,58 +45,87 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements M
 
     @ReactMethod
     public void prepare(String path) {
+        File cacheDir = mReactContext.getExternalCacheDir();
+        if (cacheDir == null) {
+            return;
+        }
+        String absolutePath = cacheDir.getPath() + path;
+        File file = new File(absolutePath);
+        if (file.exists()) {
+            file.delete();
+        }
+        Log.d(TAG, "Preparing audio recorder to record at " + absolutePath);
+        mRecorder = AudioRecorderBuilder.with(mReactContext)
+                .fileName(absolutePath)
+                .config(mConfig)
+                .loggable().build();
     }
 
     @ReactMethod
     public void startRecording() {
+        if (mRecorder == null) {
+            return;
+        }
+        mRecorder.start(new AudioRecorder.OnStartListener() {
+            @Override
+            public void onStarted() {
+
+            }
+
+            @Override
+            public void onException(Exception e) {
+
+            }
+        });
     }
 
     @ReactMethod
     public void pauseRecording() {
+        Log.d(TAG, "Pausing audio recorder");
+        pauseInternal(false);
     }
 
     @ReactMethod
     public void stopRecording() {
+        Log.d(TAG, "Stopping audio recorder");
+        pauseInternal(true);
+        mRecorder = null;
+    }
+
+    private void pauseInternal(final boolean postFinished) {
+        if (mRecorder == null) {
+            return;
+        }
+        final AudioRecorder recorder = mRecorder;
+        mRecorder.pause(new AudioRecorder.OnPauseListener() {
+            @Override
+            public void onPaused(String activeRecordFileName) {
+                Log.d(TAG, "on Audio record paused " + activeRecordFileName);
+                if (postFinished) {
+                    WritableMap values = Arguments.createMap();
+                    values.putString("status", "OK");
+                    values.putString("audioFileURL", recorder.getRecordFileName());
+                    sendEvent(getReactApplicationContext(), RECORDING_FINISHED, values);
+                }
+            }
+
+            @Override
+            public void onException(Exception e) {
+                Log.d(TAG, "on Audio record exception " + e.getMessage());
+                if (postFinished) {
+                    WritableMap values = Arguments.createMap();
+                    values.putString("status", "FAILURE");
+                    sendEvent(getReactApplicationContext(), RECORDING_FINISHED, values);
+                }
+            }
+        });
     }
 
     private void sendEvent(ReactContext reactContext,
                            String eventName,
                            @Nullable WritableMap params) {
         reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .getJSModule(RCTNativeAppEventEmitter.class)
                 .emit(eventName, params);
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        mp.start();
-        // post to the handler.
-        mProgressHandler.sendEmptyMessage(ProgressHandler.UPDATE_PROGRESS);
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        // remove from the handler.
-        mProgressHandler.removeMessages(ProgressHandler.UPDATE_PROGRESS);
-        mp.reset();
-        mp.release();
-        sendEvent(getReactApplicationContext(), PLAYER_FINISHED, Arguments.createMap());
-    }
-
-    private class ProgressHandler extends Handler {
-        public static final int UPDATE_PROGRESS = 1;
-
-        public ProgressHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case UPDATE_PROGRESS:
-                    break;
-            }
-        }
     }
 }

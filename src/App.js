@@ -20,7 +20,8 @@ const Router = connect()(RNRF.Router);
 
 class App extends Component {
     componentDidMount() {
-      codePush.sync();
+      console.log(">> Code Push Syncing./");
+      codePush.sync({ updateDialog: { title: "An update is available!" } });
     }
     render() {
         return (
@@ -30,7 +31,7 @@ class App extends Component {
                     <Schema name="default" sceneConfig={Navigator.SceneConfigs.FloatFromRight}/>
                     <Schema name="withoutAnimation"/>
 
-                    <Route name="login" component={Login} title="Login"/>
+                    <Route name="login" component={Login} title="Login" titleStyle={styles.title}/>
                     <Route name="register" component={Register} title="Register" schema="withoutAnimation"/>
 
                     <Route name="songdetails" component={SongDetails} title="Song"/>
@@ -42,3 +43,8 @@ class App extends Component {
 }
 
 module.exports = App;
+const styles = StyleSheet.create({
+  title: {
+    textAlign: 'center'
+  }
+});

@@ -8,6 +8,8 @@
 var React, {NativeModules, NativeAppEventEmitter, DeviceEventEmitter} = require('react-native');
 
 var AudioPlayerModule = NativeModules.AudioPlayerModule;
+var AudioRecorderModule = NativeModules.AudioRecorderModule;
+var AudioMixingModule = NativeModules.AudioMixingModule;
 
 var AudioPlayer = {
   play: function(path, options) {
@@ -60,14 +62,35 @@ var AudioPlayer = {
 
 var AudioRecorder = {
   prepareRecordingAtPath: function(path, options) {
+    AudioRecorderModule.prepare(path);
+    if (this.progressSubscription) this.progressSubscription.remove();
+    this.progressSubscription = NativeAppEventEmitter.addListener('recordingProgress',
+      (data) => {
+        if (this.onProgress) {
+          this.onProgress(data);
+        }
+      }
+    );
+
+    if (this.finishedSubscription) this.finishedSubscription.remove();
+    this.finishedSubscription = NativeAppEventEmitter.addListener('recordingFinished',
+      (data) => {
+        if (this.onFinished) {
+          this.onFinished(data);
+        }
+      }
+    );
   },
   startRecording: function() {
+    AudioRecorderModule.startRecording();
   },
   pauseRecording: function() {
+    AudioRecorderModule.pauseRecording();
   },
   stopRecording: function() {
+    AudioRecorderModule.stopRecording();
   },
-  
+
   playRecording: function() {
   },
   stopPlaying: function() {
@@ -76,6 +99,8 @@ var AudioRecorder = {
 
 var AudioMixer = {
   mixAudio: function(path1, path2, path3, callback) {
+    AudioMixingModule.mixAudio(" -i " + path1 + " -i " + path2 +
+    " -filter_complex [0:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=0.4[a1];[1:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=1.0[a2];[a1][a2]amerge,pan=stereo:c0<c0+c2:c1<c1+c3[out] -map [out] -c:a pcm_s16le -shortest ", path3, callback);
   }
 }
 
