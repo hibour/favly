@@ -25,23 +25,36 @@ class RecordingPlayer extends Component {
     super(props);
   }
 
-  _renderToggleButton(icons, style, onPress, isOn, size) {
-     return (<TouchableOpacity onPress={onPress} style={styles.button}>
-        <Icon name={icons.off} size={size} style={[styles.icon, styles[style.off], isOn && styles.hide]}/>
-        <Icon name={icons.on} size={size} style={[styles.icon, styles[style.on], !isOn && styles.hide]}/>
-      </TouchableOpacity>);
-   }
-
   _renderPlayerControls(recording) {
     return (<View style={styles.header}>
-              <View style={styles.recordingDetails}>
-                <Text style={styles.trackTitle}>{recording.title}</Text>
-                <Text style={styles.trackAlbum}>{moment(recording.time).toNow(true)}</Text>
+              <View style={styles.songDetails}>
+                <View style={styles.songLeftDetails}>
+                  <Text style={styles.trackTitle}>{recording.title}</Text>
+                  <Text style={styles.timers}>{this._getSoundTimer()}</Text>
+                </View>
+                <View style={styles.songRightDetails}>
+                  <Text style={styles.recordedTime}>{moment(recording.time).toNow(true)}</Text>
+                  <Text style={styles.trackAlbum}>{recording.album}</Text>
+                </View>
               </View>
+
               <View style={styles.playerControls}>
-                {this._renderToggleButton({off: 'play', on: 'pause'},
-                  {off: 'icon', on: 'icon'},
-                  this.playPause.bind(this), this.props.isPlaying, 40)}
+                {/* play / pause */}
+                {!this.props.isPlaying ?
+                  <TouchableOpacity onPress={this.play.bind(this)} style={styles.button}>
+                    <Icon name={'play'} size={60} style={[styles.icon, styles.playIcon]}/>
+                  </TouchableOpacity> :
+                  <TouchableOpacity onPress={this.pause.bind(this)} style={styles.button}>
+                    <Icon name={'pause'} size={60} style={[styles.icon, styles.pauseIcon]}/>
+                  </TouchableOpacity>
+                }
+
+                {/* stop */}
+                {this.props.isPlaying ?
+                  <TouchableOpacity onPress={this.stop.bind(this)} style={styles.button}>
+                    <Icon name={'stop'} size={40} style={[styles.icon, styles.stopIcon]}/>
+                  </TouchableOpacity> : null
+                }
               </View>
             </View>);
   }
@@ -62,12 +75,19 @@ class RecordingPlayer extends Component {
     }
   }
 
-  playPause() {
-    if (this.props.isPlaying) {
-      this.props.pauseRecording();
-    } else {
-      this.props.playRecording();
-    }
+  play() {
+    this.props.playRecording();
+  }
+  pause() {
+    this.props.pauseRecording();
+  }
+  stop() {
+    this.props.stopRecording();
+  }
+
+  _getSoundTimer() {
+    return moment.utc(this.props.currentTime).format("mm:ss") + '/' +
+      moment.utc(this.props.currentDuration).format("mm:ss");
   }
 }
 
@@ -75,6 +95,7 @@ function mapStateToProps(state) {
   return {
     isPlaying: state.recordingplayer.isPlaying,
     currentTime: state.recordingplayer.currentTime,
+    currentDuration: state.recordingplayer.currentDuration,
     recording: state.recordingplayer.currentRecording,
   }
 }
@@ -84,50 +105,67 @@ function mapDispatchToProps(dispatch) {
 module.exports = connect(mapStateToProps, mapDispatchToProps)(RecordingPlayer)
 
 const styles = StyleSheet.create({
-
   header: {
     alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    flexDirection: 'column',
+    flex: 1,
   },
 
-  recordingDetails: {
-    height: 30,
-    marginLeft: 4,
+  songDetails: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  songLeftDetails: {
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-
-  trackTitle: {
-    fontSize: 20,
-    textAlign: 'left'
-  },
-
-  trackAlbum: {
-    fontSize: 12,
-    textAlign: 'left',
-    marginLeft: 4
-  },
-
-  playerControls: {
-    height: 30,
+  songRightDetails: {
     flexDirection: 'column',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
-  button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 10
-  },
-  icon: {
-    margin: 4,
-    padding: 4,
+  trackTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
     color: 'black',
   },
-  hide: {
-    width: 0,
-    height: 0
-  }
+  timers: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  recordedTime: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  trackAlbum: {
+    fontSize: 12,
+    color: 'black',
+  },
+
+
+  playerControls: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  button: {
+    margin: 4,
+  },
+
+  icon: {
+    color: 'black',
+  },
+
+  playIcon: {
+    color: 'green'
+  },
+  pauseIcon: {
+    color: 'blue'
+  },
+  stopIcon: {
+    color: 'red'
+  },
 });

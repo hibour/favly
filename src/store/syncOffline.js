@@ -6,7 +6,7 @@ module.exports = function(store) {
 
   store.subscribe(() => {
     const { songList } = store.getState().songs
-    const { recordings } = store.getState().recordings;
+    const { recordingList } = store.getState().recordings;
 
     if (currentSongs != songList) {
       console.log(">>> Saving Songs to disk ", songList.length);
@@ -14,10 +14,10 @@ module.exports = function(store) {
       currentSongs = songList
     }
 
-    if (currentRecordings != recordings) {
-      console.log(">>> Saving Recording to disk ", recordings.length);
-      offline.save('recordings', recordings)
-      currentRecordings = recordings
+    if (currentRecordings != recordingList) {
+      console.log(">>> Saving Recordings to disk ", recordingList.length);
+      offline.save('recordingList', recordingList)
+      currentRecordings = recordingList
     }
 
   })

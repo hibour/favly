@@ -5,12 +5,11 @@ var {
   Text,
   View,
   Image,
-  TouchableOpacity,
   TouchableHighlight,
   Component,
 } = React;
 
-const CommonStyle = require('../css/common.js')
+import {styles as CommonStyles} from '../css/common.js';
 
 class SongItem extends Component {
 
@@ -21,12 +20,12 @@ class SongItem extends Component {
   render() {
     var song = this.props.song;
     return (
-      <TouchableHighlight onPress={this.props.onPress}>
-        <View style={styles.container}>
+      <TouchableHighlight onPress={this.props.onPress} >
+        <View style={[CommonStyles.listItem]}>
           <Image source={{uri: song.thumbnail}} style={styles.thumbnail}/>
           <View style={styles.rightContainer}>
-            <Text style={styles.title}>{song.title}</Text>
-            <Text style={styles.year}>{song.year}</Text>
+            <Text style={[CommonStyles.titleText, styles.title]}>{song.title}</Text>
+            <Text style={[CommonStyles.subtitleText, styles.year]}>{song.year}</Text>
           </View>
         </View>
       </TouchableHighlight>
@@ -36,27 +35,20 @@ class SongItem extends Component {
 module.exports = SongItem;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  rightContainer: {
-    flex: 1,
-  },
   thumbnail: {
     width: 84,
     height: 84,
-    marginRight: 4,
+    borderRadius: 4,
   },
+
+  rightContainer: {
+    flex: 1,
+    marginLeft: 4,
+  },
+
   title: {
-    fontSize: 20,
-    marginBottom: 8,
-    textAlign: 'left',
+    marginBottom: 4,
   },
   year: {
-    textAlign: 'left',
   },
 });

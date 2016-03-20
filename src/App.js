@@ -10,6 +10,7 @@ var Register = require('./pages/Register');
 var Login = require('./pages/Login');
 var Home = require('./pages/Home');
 var SongDetails = require('./pages/SongDetails');
+var RecordingDetails = require('./pages/RecordingDetails');
 
 import codePush from "react-native-code-push";
 import { Provider, connect } from 'react-redux'
@@ -35,6 +36,7 @@ class App extends Component {
                     <Route name="register" component={Register} title="Register" schema="withoutAnimation"/>
 
                     <Route name="songdetails" component={SongDetails} title="Song"/>
+                    <Route name="recordingdetails" component={RecordingDetails} title="Recording"/>
                     <Route name="home" initial={true} component={Home} wrapRouter={true} title="Home"/>
                 </Router>
             </Provider>

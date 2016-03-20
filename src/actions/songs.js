@@ -2,7 +2,7 @@ var offline = require('react-native-simple-store')
 import Constants from '../utils/constants.js'
 const Firebase = require('firebase');
 
-var Cache = require('../utils/Cache');
+import Cache from '../utils/Cache';
 import SongPlayerActions from './songplayer'
 
 var actions = exports = module.exports

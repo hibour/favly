@@ -11,23 +11,18 @@ var {
   InteractionManager,
   Dimensions,
 } = React;
+
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 const Icon = require('react-native-vector-icons/Ionicons');
 const CommonStyle = require('../css/common.js')
 
-
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import SongPlayer from '../components/SongPlayer';
 import Lyrics from '../components/Lyrics';
 import SongsActions from '../actions/songs'
 import SongPlayerActions from '../actions/songplayer'
-
-var {
-  height: deviceHeight,
-  width: deviceWidth
-} = Dimensions.get('window');
 
 class SongDetails extends Component {
   constructor(props) {
@@ -41,7 +36,7 @@ class SongDetails extends Component {
   }
 
   componentWillUnmount() {
-    this.props.stopRecording();
+    this.props.stopSong();
   }
 
   render() {
@@ -49,33 +44,50 @@ class SongDetails extends Component {
     var body = this.renderDownloadState(song);
 
     return (<ParallaxScrollView
-      style={styles.parallax}
-      backgroundColor="#FFFFFF"
-      contentBackgroundColor="#FFFFFF"
-      parallaxHeaderHeight={300}
-      stickyHeaderHeight={100}
-      renderStickyHeader={() => (
-        <SongPlayer></SongPlayer>
-      )}
-      renderForeground={() => (
-        <View style={styles.foreground}>
-          <Image style={styles.largeArtwork} source={{uri: song.thumbnail}}></Image>
-          <SongPlayer></SongPlayer>
-        </View>
-      )}>
+          ref="ParallaxView"
+          headerBackgroundColor="#FFFFFF"
+          contentBackgroundColor="#FFFFFF"
+          backgroundColor="#FFFFFF"
+          stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
+          parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
+          backgroundSpeed={10}
 
-      {body}
+          renderBackground={() => (
+            <View key="background">
+              <Image style={styles.largeArtwork} source={{uri: song.thumbnail}}></Image>
+            </View>
+          )}
 
+          renderForeground={() => (
+            <View key="parallax-header" style={ styles.parallaxHeader }>
+              <SongPlayer/>
+            </View>
+          )}
+
+          renderStickyHeader={() => (
+            <View key="sticky-header" style={ styles.stickySection }>
+              <SongPlayer/>
+            </View>
+          )}
+
+          renderFixedHeader={() => (
+            <View key="fixed-header" style={styles.fixedSection}>
+              <Text style={styles.fixedSectionText}
+                    onPress={() => this.refs.ParallaxView.scrollTo({ x: 0, y: 0 })}>
+                Top
+              </Text>
+            </View>
+          )}>
+          {body}
     </ParallaxScrollView>);
   }
 
   renderDownloadState(song) {
-    console.log(">>>>> Rendering download state... ", song.id, song.isLoaded);
-    if (song.isLoaded) {
-      return this.renderLyricView(song);
-    } else {
-      return this.renderDownloadingView(song);
-    }
+    return (
+      <View style={styles.container}>
+        {song.isLoaded ? this.renderLyricView(song) : this.renderDownloadingView(song)}
+      </View>
+    );
   }
 
   renderDownloadingView(song) {
@@ -88,7 +100,7 @@ class SongDetails extends Component {
 
   renderLyricView(song) {
     return (
-    <View style={styles.lyricScreen}>
+    <View style={styles.container}>
       <Lyrics lyrics={song.lyricData} />
     </View>);
   }
@@ -96,7 +108,8 @@ class SongDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    song: state.songplayer.currentSong
+    song: state.songplayer.currentSong,
+    songRecordings: state.recordings.songToRecordingMapping
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -104,14 +117,51 @@ function mapDispatchToProps(dispatch) {
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SongDetails)
 
+const window = Dimensions.get('window');
+const PARALLAX_HEADER_HEIGHT = 250;
+const STICKY_HEADER_HEIGHT = 110;
 const styles = StyleSheet.create({
 
-  parallax: {
-    marginTop: 50
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF'
+  },
+
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: window.width,
+    height: PARALLAX_HEADER_HEIGHT
+  },
+
+  stickySection: {
+    height: STICKY_HEADER_HEIGHT,
+    width: window.width,
+  },
+
+  parallaxHeader: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    paddingTop: 150,
   },
 
   largeArtwork: {
-    width: deviceWidth,
-    height: 200
-  }
+    width: window.width,
+    height: PARALLAX_HEADER_HEIGHT,
+  },
+
+
+  // TOP label
+  fixedSection: {
+    position: 'absolute',
+    bottom: 30,
+    right: 10
+  },
+  fixedSectionText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
 });

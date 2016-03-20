@@ -5,13 +5,12 @@ var {
   Text,
   View,
   Image,
-  TouchableOpacity,
   TouchableHighlight,
   Component,
 } = React;
 
-const CommonStyle = require('../css/common.js')
-const moment = require('moment');
+import {styles as CommonStyles} from '../css/common.js'
+import moment from 'moment';
 
 class RecordingItem extends Component {
 
@@ -22,10 +21,13 @@ class RecordingItem extends Component {
   render() {
     var recording = this.props.recording;
     return (
-      <TouchableHighlight onPress={this.props.onPress}>
-        <View style={styles.container}>
-          <Text style={styles.title}>{recording.title}</Text>
-          <Text style={styles.date}>{moment(recording.time).toNow(true)}</Text>
+      <TouchableHighlight onPress={this.props.onPress} >
+        <View style={[CommonStyles.listItem]}>
+          <Image source={{uri: recording.thumbnail}} style={styles.thumbnail}/>
+          <View style={styles.rightContainer}>
+            <Text style={[CommonStyles.titleText, styles.title]}>{recording.title}</Text>
+            <Text style={[CommonStyles.subtitleText, styles.date]}>{moment(recording.time).toNow(true)}</Text>
+          </View>
         </View>
       </TouchableHighlight>
     );
@@ -34,19 +36,19 @@ class RecordingItem extends Component {
 module.exports = RecordingItem;
 
 const styles = StyleSheet.create({
-  container: {
+  rightContainer: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginLeft: 4,
+  },
+  thumbnail: {
+    width: 84,
+    height: 84,
+    borderRadius: 4,
+  },
+
+  title: {
     marginBottom: 4,
   },
-  title: {
-    fontSize: 20,
-    marginBottom: 8,
-    textAlign: 'left',
-  },
   date: {
-    textAlign: 'left',
   },
 });

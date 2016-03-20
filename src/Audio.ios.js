@@ -23,6 +23,9 @@ var AudioPlayer = {
       playbackOptions = options;
     }
     AudioPlayerManager.play(path, playbackOptions);
+    if (this.onStart) {
+      this.onStart();
+    }
   },
   playWithUrl: function(url, options) {
     var playbackOptions = null;
@@ -34,6 +37,9 @@ var AudioPlayer = {
       playbackOptions = options;
     }
     AudioPlayerManager.playWithUrl(url, playbackOptions);
+    if (this.onStart) {
+      this.onStart(data);
+    }
   },
   pause: function() {
     AudioPlayerManager.pause();
@@ -49,6 +55,9 @@ var AudioPlayer = {
   },
   skipToSeconds: function(position) {
     AudioPlayerManager.skipToSeconds(position);
+  },
+
+  setStartSubscription: function() {
   },
   setProgressSubscription: function() {
     if (this.progressSubscription) this.progressSubscription.remove();

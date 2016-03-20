@@ -17,6 +17,7 @@ const songInitialState = {
   title: 'Unknown',
   album: 'Unknown',
   year: 'Unknown',
+  thumbnail: '',
   track: '',
   lyrics: '',
   version: 0,

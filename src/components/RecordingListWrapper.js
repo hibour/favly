@@ -5,13 +5,16 @@ var {
   Text,
   View,
   Component,
+  Dimensions,
 } = React;
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import {styles as CommonStyles} from '../css/common.js'
 
-const RecordingList = require('./RecordingList');
-const RecordingsActions = require('../actions/recordings')
+import RecordingsActions from '../actions/recordings'
+import RecordingPlayer from './RecordingPlayer';
+import RecordingList from './RecordingList';
 
 class RecordingListWrapper extends Component {
   constructor(props) {
@@ -19,11 +22,12 @@ class RecordingListWrapper extends Component {
   }
 
   componentDidMount() {
+    console.log(">>>>> RecordingListWrapper mounted. Loading offline");
     this.props.loadOfflineRecordings();
   }
 
   render() {
-    if (!this.props.recordings) {
+    if (!this.props.recordingList) {
       return this.renderLoadingView();
     }
     return this.renderRecordings();
@@ -31,20 +35,22 @@ class RecordingListWrapper extends Component {
 
   renderLoadingView() {
     return (
-      <View style={styles.container}>
+      <View style={[CommonStyles.container, tyles.container]}>
         <Text>No Recordings Yet!</Text>
       </View>
     );
   }
 
   renderRecordings() {
-    return (<RecordingList recordings={this.props.recordings}/>);
+    return (<View style={[CommonStyles.container, styles.container]}>
+        <RecordingList recordings={this.props.recordingList}/>
+      </View>);
   }
 }
 
 function mapStateToProps(state) {
   return {
-    recordings: state.recordings.recordings
+    recordingList: state.recordings.recordingList
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -52,12 +58,10 @@ function mapDispatchToProps(dispatch) {
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(RecordingListWrapper)
 
-
+const window = Dimensions.get('window')
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
-});
+})

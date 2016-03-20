@@ -20,7 +20,7 @@ import ScrollableTabView, { DefaultTabBar, ScrollableTabBar, } from 'react-nativ
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Constants from '../utils/constants.js'
-import CommonStyle from '../css/common.js'
+import {styles as CommonStyles} from '../css/common.js';
 
 const Firebase = require('firebase');
 
@@ -31,22 +31,22 @@ class Home extends Component {
   }
 
   render() {
-    return (<View style={styles.container}>
+    return (<View style={[CommonStyles.container, styles.container]}>
       <ScrollableTabView
         initialPage={0}
         tabBarPosition="bottom"
         renderTabBar={() => <FavlyTabBar />}>
 
-        <ScrollView tabLabel="music-note" style={styles.tabView}>
+        <ScrollView tabLabel="music-note" style={[CommonStyles.homeTabView, styles.tabView]}>
           <SongListWrapper></SongListWrapper>
         </ScrollView>
 
-        <ScrollView tabLabel="ios-recording" style={styles.tabView}>
+        <ScrollView tabLabel="ios-recording" style={[CommonStyles.homeTabView, styles.tabView]}>
           <RecordingListWrapper></RecordingListWrapper>
         </ScrollView>
 
-        <ScrollView tabLabel="more" style={styles.tabView}>
-          <View style={styles.card}>
+        <ScrollView tabLabel="more" style={[CommonStyles.homeTabView, styles.tabView]}>
+          <View style={[CommonStyles.container]}>
             <Text>Settings</Text>
           </View>
         </ScrollView>
@@ -59,26 +59,9 @@ class Home extends Component {
 module.exports = Home;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     marginTop: 50,
   },
 
   tabView: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: 'rgba(0,0,0,0.01)',
-  },
-
-  card: {
-    borderWidth: 1,
-    backgroundColor: '#fff',
-    borderColor: 'rgba(0,0,0,0.1)',
-    margin: 5,
-    height: deviceHeight - 80,
-    padding: 15,
-    shadowColor: '#ccc',
-    shadowOffset: { width: 1, height: 1, },
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
   },
 });

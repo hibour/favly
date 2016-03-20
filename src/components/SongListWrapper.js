@@ -5,12 +5,15 @@ var {
   Text,
   View,
   Component,
+  Dimensions,
 } = React;
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-const SongList = require('./SongList');
-const SongsActions = require('../actions/songs')
+import {styles as CommonStyles} from '../css/common.js'
+
+import SongList from './SongList';
+import SongsActions from '../actions/songs'
 
 class SongListWrapper extends Component {
   constructor(props) {
@@ -31,14 +34,18 @@ class SongListWrapper extends Component {
 
   renderLoadingView() {
     return (
-      <View style={styles.container}>
+      <View style={[CommonStyles.container, styles.container]}>
         <Text>Loading songs...</Text>
       </View>
     );
   }
 
   renderSongs() {
-    return (<SongList songs={this.props.songList}/>);
+    return (
+      <View style={[CommonStyles.container, styles.container]}>
+        <SongList songs={this.props.songList}/>
+      </View>
+    );
   }
 }
 
@@ -52,11 +59,10 @@ function mapDispatchToProps(dispatch) {
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SongListWrapper)
 
+const window = Dimensions.get('window')
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
-});
+})

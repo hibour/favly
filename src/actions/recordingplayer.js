@@ -5,6 +5,7 @@ var actions = exports = module.exports
 exports.CHANGE_RECORDING = 'CHANGE_RECORDING'
 exports.PLAY_RECORDING = 'PLAY_RECORDING'
 exports.PAUSE_RECORDING = 'PAUSE_RECORDING'
+exports.STOP_RECORDING_PLAYBACK = 'STOP_RECORDING_PLAYBACK'
 exports.SET_RECORDING_CURRENT_TIME = 'SET_RECORDING_CURRENT_TIME'
 
 exports.changeRecording = function changeRecording(recording) {
@@ -19,9 +20,7 @@ exports.playRecording = function playRecording() {
     var recordingplayer = getState().recordingplayer;
     var recording = recordingplayer.currentRecording;
     if (recording) {
-      console.log(">>>> Playing recording from ", recording.path);
       AudioPlayer.play(recording.path, {sessionCategory: 'Playback'});
-
       AudioPlayer.onProgress = (data) => {
         dispatch({
           type: actions.SET_RECORDING_CURRENT_TIME,
@@ -43,9 +42,24 @@ exports.playRecording = function playRecording() {
 
 exports.pauseRecording = function pauseRecording() {
   return (dispatch, getState) => {
-    AudioPlayer.pause();
-    dispatch({
-      type: actions.PAUSE_RECORDING
-    });
+    var recordingplayer = getState().recordingplayer;
+    if (recordingplayer.isPlaying) {
+      AudioPlayer.pause();
+      dispatch({
+        type: actions.PAUSE_RECORDING
+      });
+    }
   };
+}
+
+exports.stopRecording = function stopRecording() {
+  return (dispatch, getState) => {
+    var recordingplayer = getState().recordingplayer;
+    if (recordingplayer.isPlaying) {
+      AudioPlayer.stop();
+      dispatch({
+        type: actions.STOP_RECORDING_PLAYBACK
+      });
+    }
+  }
 }

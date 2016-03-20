@@ -41,7 +41,26 @@ var Cache = {
       console.log("Successfully downloaded");
       this.getData(path, url, encoding, onSuccess, onFailure);
     });
+  },
+
+  deleteRecording: function(recording, onSuccess, onFailure) {
+    RNFS.unlink(recording.path).spread((success, path) => {
+      console.log('FILE DELETED', success, path);
+      if (onSuccess) {
+        onSuccess();
+      }
+    }).catch((err) => {
+      console.log(err.message);
+      if (onFailure) {
+        onFailure();
+      }
+    });
+  },
+
+  deleteSong: function(song) {
+    // TODO Implement this and plugin.
   }
+
 }
 
 module.exports = Cache;

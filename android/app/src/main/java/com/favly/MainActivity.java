@@ -50,7 +50,8 @@ public class MainActivity extends ReactActivity {
                 this._codePush.getReactPackage(),
                 new RNFSPackage(),
                 new VectorIconsPackage(),
-                new AudioPackage()
+                new AudioPackage(),
+                new SharePackage()
         );
     }
 }

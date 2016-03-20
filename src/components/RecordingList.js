@@ -4,20 +4,17 @@ var {
   StyleSheet,
   Text,
   View,
-  Image,
-  TouchableOpacity,
-  Animated,
   Component,
   ListView,
 } = React;
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {Actions} from 'react-native-router-flux'
-const RecordingPlayerActions = require('../actions/recordingplayer')
+import { Actions } from 'react-native-router-flux'
+import {styles as CommonStyles} from '../css/common.js';
 
+import RecordingPlayerActions from '../actions/recordingplayer'
 import RecordingItem from './RecordingItem';
-import RecordingPlayer from './RecordingPlayer';
 
 class RecordingList extends Component {
   constructor(props) {
@@ -30,14 +27,11 @@ class RecordingList extends Component {
   render() {
     if (this.props.recordings.length > 0) {
       this.dataSource = this.dataSource.cloneWithRows(this.props.recordings);
-      return (<View>
-        <ListView
-          dataSource={this.dataSource}
+      return (
+        <ListView dataSource={this.dataSource}
           renderRow={this.renderRecording.bind(this)}
-          style={styles.listView}
+          style={[CommonStyles.listView, styles.listView]}
         />
-        <RecordingPlayer style={styles.playerView}></RecordingPlayer>
-        </View>
       );
     } else {
       return this.renderEmptyList();
@@ -55,12 +49,13 @@ class RecordingList extends Component {
   renderRecording(recording) {
     return (<RecordingItem recording={recording} onPress={() => {
       this.props.changeRecording(recording);
+      Actions.recordingdetails();
     }}/>);
   }
 
   renderEmptyList() {
     return (
-      <View style={styles.container}>
+      <View>
         <Text>No recordings Yet!</Text>
       </View>
     );
@@ -78,16 +73,6 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(RecordingList)
 
 const styles = StyleSheet.create({
   listView: {
-    paddingTop: 20,
-    backgroundColor: '#FFFFFF',
-    flex: 1
-  },
-
-  playerView: {
-    flex: 0,
-    borderTopWidth: 1,
-    height: 50,
-    position: 'absolute',
   },
 
   searchCell: {

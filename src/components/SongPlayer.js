@@ -24,62 +24,62 @@ class SongPlayer extends Component {
     super(props);
   }
 
-  _renderToggleButton(icons, style, onPress, isOn, size) {
-     return (<TouchableOpacity onPress={onPress} style={styles.button}>
-        <Icon name={icons.off} size={size} style={[styles.icon, styles[style.off], isOn && styles.hide]}/>
-        <Icon name={icons.on} size={size} style={[styles.icon, styles[style.on], !isOn && styles.hide]}/>
-      </TouchableOpacity>);
-   }
-   _renderButton(icon, style, onPress, isOn, size) {
-      return (<TouchableOpacity onPress={onPress} style={styles.button}>
-         <Icon name={icon} size={size} style={[styles.icon, styles[style], isOn && styles.hide]}/>
-       </TouchableOpacity>);
-    }
-
-  _renderPlayerControls(song) {
+  render() {
+    var song = this.props.song;
     return (<View style={styles.header}>
               <View style={styles.songDetails}>
-                <Text style={styles.trackTitle}>{song.title}</Text>
-                <Text style={styles.trackAlbum}>{song.album}</Text>
+                <View style={styles.songLeftDetails}>
+                  <Text style={styles.trackTitle}>{song.title}</Text>
+                  <Text style={styles.timers}>{this._getSoundTimer()}</Text>
+                </View>
+                <View style={styles.songRightDetails}>
+                  <Text style={styles.trackAlbum}>{song.album}</Text>
+                </View>
               </View>
+
               <View style={styles.playerControls}>
-                <Text style={styles.timers}>{this._getSoundTimer()}</Text>
-                {this._renderToggleButton({off: 'record', on: 'pause'},
-                  {off: 'recordIcon', on: 'pauseIcon'},
-                  this.playPause.bind(this), this.props.isPlaying, 60)}
+                {/* record / stop */}
+                {!this.props.isPlaying ?
+                  <TouchableOpacity onPress={this.play.bind(this)} style={styles.button}>
+                    <Icon name={'record'} size={60} style={[styles.icon, styles.recordIcon]}/>
+                  </TouchableOpacity> :
+                  <TouchableOpacity onPress={this.stop.bind(this)} style={styles.button}>
+                    <Icon name={'stop'} size={60} style={[styles.icon, styles.stopIcon]}/>
+                  </TouchableOpacity>
+                }
 
-                {this._renderButton('stop', 'icon',
-                  this.stop.bind(this), !this.props.isRecording, 50)}
+                {/* pause */}
+                {this.props.isPlaying ?
+                  <TouchableOpacity onPress={this.pause.bind(this)} style={styles.button}>
+                    <Icon name={'pause'} size={40} style={[styles.icon, styles.pauseIcon]}/>
+                  </TouchableOpacity> : null
+                }
 
-                {this._renderToggleButton({off: 'ios-mic', on: 'ios-mic-off'},
-                  {off: 'icon', on: 'icon'},
-                  this.toggleMute.bind(this), this.props.isMute, 30)}
+                {/* mic On / mic Off */}
+                {this.props.isPlaying ?
+                  <TouchableOpacity onPress={this.toggleMute.bind(this)} style={styles.button}>
+                    {this.props.isMute ?
+                      <Icon name={'ios-mic'} size={30} style={styles.icon}/> :
+                      <Icon name={'ios-mic-off'} size={30} style={styles.icon}/>
+                    }
+                  </TouchableOpacity> : null
+                }
               </View>
             </View>);
   }
 
-  render() {
-    return (this._renderPlayerControls(this.props.song));
+  play() {
+    this.props.playSong();
   }
-
-  playPause() {
-    if (this.props.isPlaying) {
-      this.props.pauseSong();
-    } else {
-      this.props.playSong();
-      // Recording is not started. lets start it.
-      if (!this.props.isRecording) {
-        this.props.startRecording();
-      }
-    }
+  pause() {
+    this.props.pauseSong();
+  }
+  stop() {
+    this.props.stopSong();
   }
 
   toggleMute() {
     this.props.toggleMute();
-  }
-
-  stop() {
-    this.props.stopRecording();
   }
 
   _getSoundTimer() {
@@ -91,7 +91,6 @@ class SongPlayer extends Component {
 function mapStateToProps(state) {
   return {
     isPlaying: state.songplayer.isPlaying,
-    isRecording: state.songplayer.isRecording,
     isMute: state.songplayer.isMute,
 
     currentTime: state.songplayer.currentTime,
@@ -106,53 +105,51 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(SongPlayer)
 
 const styles = StyleSheet.create({
   header: {
+    alignItems: 'center',
+    flexDirection: 'column',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-  },
-
-  foreground: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
   },
 
   songDetails: {
     flex: 1,
-    height: 30,
-    marginLeft: 4,
     flexDirection: 'row',
+    alignItems: 'center',
+  },
+  songLeftDetails: {
+    flexDirection: 'column',
     alignItems: 'flex-start',
   },
-
-  trackTitle: {
-    fontSize: 20,
-    textAlign: 'left'
+  songRightDetails: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
   },
-
+  trackTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  timers: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'black',
+  },
   trackAlbum: {
     fontSize: 12,
-    textAlign: 'left',
-    marginLeft: 4
+    color: 'black',
   },
 
+
   playerControls: {
-    height: 30,
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
   },
+
   button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 10
-  },
-  icon: {
     margin: 4,
-    padding: 4,
+  },
+
+  icon: {
     color: 'black',
   },
 
@@ -162,15 +159,7 @@ const styles = StyleSheet.create({
   pauseIcon: {
     color: 'blue'
   },
-
-  timers: {
-    fontSize: 12,
-    textAlign: 'left',
-    marginLeft: 4
+  stopIcon: {
+    color: 'black'
   },
-
-  hide: {
-    width: 0,
-    height: 0
-  }
 });

@@ -29,6 +29,7 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
 
     private static final String TAG = "AudioPlayerModule";
 
+    private static final String PLAYER_STARTED = "playerStarted";
     private static final String PLAYER_PROGRESS = "playerProgress";
     private static final String PLAYER_FINISHED = "playerFinished";
 
@@ -49,12 +50,10 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
     public void play(String path) {
         try {
             if (mMediaPlayer != null) {
-                if (mMediaPlayer.isPlaying()) {
-                    mMediaPlayer.stop();
-                }
+                mMediaPlayer.stop();
                 mMediaPlayer.release();
             }
-
+            Log.d(TAG, "Going to play audio from " + path);
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setOnCompletionListener(this);
             mMediaPlayer.setOnPreparedListener(this);
@@ -69,35 +68,41 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
 
     @ReactMethod
     public void pause() {
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            Log.d(TAG, "Pausing the audio");
             mMediaPlayer.pause();
         }
     }
 
     @ReactMethod
     public void unpause() {
-        if (!mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
+            Log.d(TAG, "Unpausing the audio");
             mMediaPlayer.start();
         }
     }
 
     @ReactMethod
     public void stop() {
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            Log.d(TAG, "Stopping the audio");
             mMediaPlayer.stop();
+            mMediaPlayer.reset();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
         }
     }
 
     @ReactMethod
     public void setCurrentTime(int time) {
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.seekTo(time);
         }
     }
 
     @ReactMethod
     public void getDuration(Callback infoCallback) {
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             infoCallback.invoke(mMediaPlayer.getDuration());
         } else {
             infoCallback.invoke(0);
@@ -106,7 +111,7 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
 
     @ReactMethod
     public void getCurrentTime(Callback infoCallback) {
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             infoCallback.invoke(mMediaPlayer.getCurrentPosition());
         } else {
             infoCallback.invoke(0);
@@ -123,8 +128,11 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        Log.d(TAG, "Audio Playback started at" + System.currentTimeMillis());
         mp.start();
+        // Start recording..
         // post to the handler.
+        sendEvent(getReactApplicationContext(), PLAYER_STARTED, Arguments.createMap());
         mProgressHandler.sendEmptyMessage(ProgressHandler.UPDATE_PROGRESS);
     }
 
@@ -135,6 +143,9 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
         mp.reset();
         mp.release();
         sendEvent(getReactApplicationContext(), PLAYER_FINISHED, Arguments.createMap());
+        if (mp == mMediaPlayer) {
+            mMediaPlayer = null;
+        }
     }
 
     private class ProgressHandler extends Handler {
@@ -149,7 +160,7 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
             super.handleMessage(msg);
             switch (msg.what) {
                 case UPDATE_PROGRESS:
-                    if (mMediaPlayer.isPlaying()) {
+                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                         WritableMap values = Arguments.createMap();
                         values.putInt("currentDuration", mMediaPlayer.getDuration() / 1000);
                         values.putInt("currentTime", mMediaPlayer.getCurrentPosition() / 1000);

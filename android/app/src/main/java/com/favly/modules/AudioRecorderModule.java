@@ -16,6 +16,7 @@ import com.github.lassana.recorder.AudioRecorder;
 import com.github.lassana.recorder.AudioRecorderBuilder;
 
 import java.io.File;
+import java.util.Date;
 
 /**
  * Created by nageswara on 3/8/16.
@@ -34,8 +35,8 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
     public AudioRecorderModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
-        mConfig = new AudioRecorder.MediaRecorderConfig(48 * 1024, 2,
-                MediaRecorder.AudioSource.DEFAULT, MediaRecorder.AudioEncoder.AAC);
+        mConfig = new AudioRecorder.MediaRecorderConfig(44100, 2,
+                MediaRecorder.AudioSource.DEFAULT, MediaRecorder.AudioEncoder.DEFAULT);
     }
 
     @Override
@@ -66,10 +67,11 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
         if (mRecorder == null) {
             return;
         }
+        Log.d(TAG, "Audio recording started at" + System.currentTimeMillis());
         mRecorder.start(new AudioRecorder.OnStartListener() {
             @Override
             public void onStarted() {
-
+                Log.d(TAG, "Audio recording actually started at" + System.currentTimeMillis());
             }
 
             @Override

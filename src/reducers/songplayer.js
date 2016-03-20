@@ -4,9 +4,8 @@ const {
   REFRESH_SONG,
   PLAY_SONG,
   PAUSE_SONG,
+  STOP_SONG,
 
-  START_RECORDING,
-  STOP_RECORDING,
   TOGGLE_MUTE,
   SET_CURRENT_TIME
 } = require('../actions/songplayer')
@@ -14,7 +13,7 @@ var LRC = require('../utils/lrc')
 
 const initialState = {
   isPlaying: false,
-  isRecording: false,
+  isActive: false,
   isMute: false,
 
   currentSong: {},
@@ -35,6 +34,10 @@ const songplayer = (state = initialState, action) => {
       return {
         ...state,
         currentSong: song,
+        isPlaying: false,
+        isActive: false,
+        isMute: false,
+
         currentTime: 0,
         currentDuration: 0,
         currentLyricIndex: 0,
@@ -59,7 +62,8 @@ const songplayer = (state = initialState, action) => {
     case PLAY_SONG:
       return {
         ...state,
-        isPlaying: true
+        isPlaying: true,
+        isActive: true,
       }
 
     case PAUSE_SONG:
@@ -68,17 +72,11 @@ const songplayer = (state = initialState, action) => {
         isPlaying: false,
       }
 
-    case START_RECORDING:
-      return {
-        ...state,
-        isRecording: true,
-      }
-
-    case STOP_RECORDING:
+    case STOP_SONG:
       return {
         ...state,
         isPlaying: false,
-        isRecording: false
+        isActive: false,
       }
 
     case TOGGLE_MUTE:
@@ -90,7 +88,8 @@ const songplayer = (state = initialState, action) => {
     case SET_CURRENT_TIME:
       var duration = action.duration || state.currentDuration;
       var time = action.time || state.currentTime;
-      var highlightLine = 0;
+      var highlightLine = -1;
+      var upcomingHighlightedLine = -1;
       if (state.currentLRCPlayer) {
         highlightLine = Math.max(state.currentLRCPlayer.findLineAt(time) - 1, 0);
       }
