@@ -7,7 +7,9 @@ var {
   Image,
   Component,
   TouchableOpacity,
+  InteractionManager,
   Dimensions,
+  BackAndroid,
 } = React;
 
 import { bindActionCreators } from 'redux'
@@ -24,12 +26,22 @@ class RecordingDetails extends Component {
     super(props);
   }
 
+  componentWillMount() {
+    BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
+  }
+
   componentWillUnmount() {
     this.props.stopRecording();
   }
 
   render() {
     var recording = this.props.recording;
+    if (!recording) {
+      InteractionManager.runAfterInteractions(() => {
+        Actions.pop();
+      });
+      return (<View></View>);
+    }
     return (<View style={styles.container} key="background">
               <Image style={styles.largeArtwork} source={{uri: recording.thumbnail}}/>
               <RecordingPlayer/>
@@ -50,7 +62,6 @@ class RecordingDetails extends Component {
 
   delete() {
     this.props.deleteRecording(this.props.recording.id);
-    Actions.home();
   }
 }
 

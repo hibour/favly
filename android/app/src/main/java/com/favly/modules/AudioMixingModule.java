@@ -1,24 +1,21 @@
 package com.favly.modules;
 
-import android.support.annotation.Nullable;
+import android.os.Environment;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
-import com.github.lassana.recorder.AudioRecorder;
-import com.github.lassana.recorder.AudioRecorderBuilder;
-import com.github.lassana.recorder.Mp4ParserWrapper;
+
+import java.io.File;
 
 /**
  * Created by nageswara on 3/8/16.
@@ -62,7 +59,14 @@ public class AudioMixingModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void mixAudio(String options, String destination, final Callback callback) {
         try {
-            String command = options + destination + "\n";
+            File audioDir = new File(Environment.getExternalStorageDirectory(), "com.favly");
+            audioDir.mkdirs();
+            final File destinationFile = new File(audioDir, destination);
+            if (destinationFile.exists()) {
+                destinationFile.delete();
+            }
+
+            String command = options + destinationFile.getAbsolutePath() + "\n";
             Log.d(TAG, "Executing command " + command);
             mFFMpeg.execute(command, new ExecuteBinaryResponseHandler() {
                 @Override
@@ -80,7 +84,11 @@ public class AudioMixingModule extends ReactContextBaseJavaModule {
 
                 @Override
                 public void onSuccess(String message) {
-                    callback.invoke(null, message);
+                    WritableMap values = Arguments.createMap();
+                    values.putString("status", "OK");
+                    values.putString("result", message);
+                    values.putString("audioFileURL", destinationFile.getAbsolutePath());
+                    callback.invoke(null, values);
                 }
 
                 @Override

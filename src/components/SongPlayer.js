@@ -11,12 +11,12 @@ var {
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-const SongPlayerActions = require('../actions/songplayer')
-const RecordingsActions = require('../actions/recordings')
+import SongPlayerActions from '../actions/songplayer'
+import RecordingsActions from '../actions/recordings'
 
-const Icon = require('react-native-vector-icons/Ionicons');
-const CommonStyle = require('../css/common.js')
-const moment = require('moment');
+import Icon from 'react-native-vector-icons/Ionicons';
+import CommonStyle from '../css/common.js'
+import moment from 'moment';
 
 class SongPlayer extends Component {
 
@@ -49,11 +49,11 @@ class SongPlayer extends Component {
                 }
 
                 {/* pause */}
-                {this.props.isPlaying ?
+                {/*this.props.isPlaying ?
                   <TouchableOpacity onPress={this.pause.bind(this)} style={styles.button}>
                     <Icon name={'pause'} size={40} style={[styles.icon, styles.pauseIcon]}/>
                   </TouchableOpacity> : null
-                }
+                */}
 
                 {/* mic On / mic Off */}
                 {this.props.isPlaying ?

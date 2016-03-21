@@ -1,5 +1,6 @@
 var { AudioRecorder, AudioPlayer, AudioMixer } = require('../Audio');
-const moment = require('moment');
+import moment from 'moment';
+import RNFS from 'react-native-fs';
 import Constants from '../utils/constants.js'
 import RecordingsActions from './recordings'
 
@@ -111,7 +112,6 @@ exports.stopSong = function stopSong() {
         var song = songplayer.currentSong;
 
         var path = Constants.getFinalRecordPath(song, new Date());
-
         AudioMixer.mixAudio(Constants.getSongPath(song),
           data.audioFileURL,
           path,
@@ -121,7 +121,7 @@ exports.stopSong = function stopSong() {
               dispatch({
                 type: RecordingsActions.ADD_RECORDING,
                 recording: {
-                  path: path,
+                  path: success.audioFileURL,
                   title: song.title,
                   songid: song.id,
                   album: song.album,
@@ -134,13 +134,13 @@ exports.stopSong = function stopSong() {
               //TODO Show error to the user.
             }
           })
-      };
+      }
 
       AudioPlayer.stop();
       AudioRecorder.stopRecording();
       dispatch({
         type: actions.STOP_SONG
-      });
+      })
     }
   }
 }

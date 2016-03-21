@@ -1,5 +1,5 @@
 var { Platform } = require('react-native');
-var RNFS = require('react-native-fs');
+import RNFS from 'react-native-fs';
 var Constants = {
   FIREBASEURL: 'https://shining-fire-6281.firebaseio.com/',
 
@@ -17,14 +17,14 @@ var Constants = {
     if (Platform.OS == 'ios') {
       return  base + '.caf';
     } else {
-      return base + '.m4a';
+      return base + '.3gp';
     }
   },
 
   getFinalRecordPath: function(song, date) {
-    var songDir = RNFS.CachesDirectoryPath + '/';
-    var base = songDir + song.id + '_' + Math.floor(date.getTime()/1000);
+    var base = song.id + '_' + Math.floor(date.getTime()/1000);
     if (Platform.OS == 'ios') {
+      base = RNFS.CachesDirectoryPath + '/' + base;
       return base + '.m4a';
     } else {
       return base + '.wav';

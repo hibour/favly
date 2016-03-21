@@ -3,13 +3,17 @@ const {
   ADD_RECORDING,
   DELETE_RECORDING,
 } = require('../actions/recordings')
+import moment from 'moment'
 
 const initialState = {
   recordings: {},
   recordingList: [],
   songToRecordingMapping: {},
-  loadedOfflineRecordings: false,
   maxId: Math.round(new Date().getTime()/1000.0)
+}
+
+const comparator = function(recording1, recording2) {
+  return recording2.momentTime.diff(recording1.momentTime);
 }
 
 const addRecording = (recordings, mapping, recording) => {
@@ -21,8 +25,13 @@ const addRecording = (recordings, mapping, recording) => {
 }
 const getRecordingListFromMap = (recordings) => {
   var recordingList = Object.keys(recordings).map((key) => {return recordings[key]});
-  recordingList = recordingList.sort(function(a, b){return b.time - a.time});
-  return recordingList;
+  return recordingList.sort(comparator);
+}
+const removeElementFromList = (list, element) => {
+  var i = list.indexOf(element);
+  if(i != -1) {
+  	list.splice(i, 1);
+  }
 }
 
 const recording = (state, action) => {
@@ -35,6 +44,7 @@ const recording = (state, action) => {
 
         path: action.recording.path,
         time: action.recording.time,
+        momentTime: moment(action.recording.time),
 
         album: action.recording.album,
         thumbnail: action.recording.thumbnail,
@@ -49,6 +59,7 @@ const recordings = (state = initialState, action) => {
     case ADD_RECORDING:
       action.id = state.maxId;
       var recordings = Object.assign({}, state.recordings);
+      var recordingList = Object.assign({}, state.recordingList);
       var songToRecordingMapping = Object.assign({}, state.songToRecordingMapping);
 
       addRecording(recordings, songToRecordingMapping, recording(undefined, action));
@@ -66,14 +77,17 @@ const recordings = (state = initialState, action) => {
       var songToRecordingMapping = Object.assign({}, state.songToRecordingMapping);
 
       var recordingList = action.recordingList || [];
-      recordingList.sort(function(a, b){return b.time - a.time});
+      recordingList.forEach((recordingItem) => {
+        recordingItem.momentTime = moment(recordingItem.time);
+      });
+
+      recordingList = recordingList.sort(comparator);
       recordingList.forEach((recordingItem) => {
         addRecording(recordings, songToRecordingMapping, recordingItem);
       });
 
       return {
         ...state,
-        loadedOfflineRecordings: true,
         recordings: recordings,
         songToRecordingMapping: songToRecordingMapping,
         recordingList: recordingList,
@@ -81,14 +95,22 @@ const recordings = (state = initialState, action) => {
 
     case DELETE_RECORDING:
       var recordings = Object.assign({}, state.recordings);
-      delete recordings[action.id];
+      var recordingList = Object.assign({}, state.recordingList);
+      var songToRecordingMapping = Object.assign({}, state.songToRecordingMapping);
 
-      var recordingList = Object.keys(recordings).map((key) => {return recordings[key]});
-      recordingList.sort(function(a, b){return b.time - a.time});
+      var recordingItem = recordings[action.id];
+      if (!recordingItem) {
+        return state;
+      }
+
+      delete recordings[recordingItem.id];
+      removeElementFromList(songToRecordingMapping[recordingItem.songid], recordingItem);
+
       return {
         ...state,
         recordings: recordings,
-        recordingList: recordingList
+        songToRecordingMapping: songToRecordingMapping,
+        recordingList: getRecordingListFromMap(recordings),
       }
 
     default:

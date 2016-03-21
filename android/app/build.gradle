@@ -38,6 +38,7 @@ import com.android.build.OutputFile
  *
  *   // where to put the JS bundle asset in debug mode
  *   jsBundleDirDebug: "$buildDir/intermediates/assets/debug",
+
  *
  *   // where to put the JS bundle asset in release mode
  *   jsBundleDirRelease: "$buildDir/intermediates/assets/release",
@@ -132,6 +133,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-linear-gradient')
     compile project(':react-native-code-push')
     compile project(':react-native-fs')
     compile project(':react-native-vector-icons')
@@ -139,6 +141,5 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile "com.googlecode.mp4parser:isoparser:1.0.2"
-    compile "com.github.lassana:continuous-audiorecorder:1.1.0"
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
 }

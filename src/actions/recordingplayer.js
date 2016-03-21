@@ -3,6 +3,7 @@ var { AudioPlayer } = require('../Audio');
 var actions = exports = module.exports
 
 exports.CHANGE_RECORDING = 'CHANGE_RECORDING'
+exports.REFRESH_RECORDING = 'REFRESH_RECORDING'
 exports.PLAY_RECORDING = 'PLAY_RECORDING'
 exports.PAUSE_RECORDING = 'PAUSE_RECORDING'
 exports.STOP_RECORDING_PLAYBACK = 'STOP_RECORDING_PLAYBACK'

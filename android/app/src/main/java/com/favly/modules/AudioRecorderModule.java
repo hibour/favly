@@ -10,13 +10,12 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.modules.core.RCTNativeAppEventEmitter;
-import com.github.lassana.recorder.AudioRecorder;
-import com.github.lassana.recorder.AudioRecorderBuilder;
+import com.favly.modules.recorder.ApiHelper;
+import com.favly.modules.recorder.AudioRecorder;
+import com.favly.modules.recorder.AudioRecorderBuilder;
 
 import java.io.File;
-import java.util.Date;
 
 /**
  * Created by nageswara on 3/8/16.
@@ -35,8 +34,8 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
     public AudioRecorderModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
-        mConfig = new AudioRecorder.MediaRecorderConfig(44100, 2,
-                MediaRecorder.AudioSource.DEFAULT, MediaRecorder.AudioEncoder.DEFAULT);
+        mConfig = new AudioRecorder.MediaRecorderConfig(96000, 2,
+                MediaRecorder.AudioSource.DEFAULT, ApiHelper.DEFAULT_AUDIO_ENCODER, 44100);
     }
 
     @Override
@@ -98,7 +97,6 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
         if (mRecorder == null) {
             return;
         }
-        final AudioRecorder recorder = mRecorder;
         mRecorder.pause(new AudioRecorder.OnPauseListener() {
             @Override
             public void onPaused(String activeRecordFileName) {
@@ -106,7 +104,7 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
                 if (postFinished) {
                     WritableMap values = Arguments.createMap();
                     values.putString("status", "OK");
-                    values.putString("audioFileURL", recorder.getRecordFileName());
+                    values.putString("audioFileURL", activeRecordFileName);
                     sendEvent(getReactApplicationContext(), RECORDING_FINISHED, values);
                 }
             }

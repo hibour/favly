@@ -1,5 +1,6 @@
 const {
   CHANGE_RECORDING,
+  REFRESH_RECORDING,
   PLAY_RECORDING,
   PAUSE_RECORDING,
   STOP_RECORDING_PLAYBACK,
@@ -21,6 +22,12 @@ const recordingplayer = (state = initialState, action) => {
         currentRecording: action.recording,
         currentTime: 0,
         currentDuration: 0,
+      }
+
+    case REFRESH_RECORDING:
+      return {
+        ...state,
+        currentRecording: action.recording,
       }
 
     case PLAY_RECORDING:

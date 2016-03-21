@@ -8,6 +8,7 @@ import com.facebook.react.uimanager.ViewManager;
 import com.favly.modules.AudioMixingModule;
 import com.favly.modules.AudioPlayerModule;
 import com.favly.modules.AudioRecorderModule;
+import com.favly.modules.AudioRecorderNaiveModule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,7 @@ public class AudioPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new AudioPlayerModule(reactContext));
-        modules.add(new AudioRecorderModule(reactContext));
+        modules.add(new AudioRecorderNaiveModule(reactContext));
         modules.add(new AudioMixingModule(reactContext));
         return modules;
     }

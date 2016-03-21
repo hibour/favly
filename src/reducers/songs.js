@@ -9,7 +9,7 @@ const {
 
 const initialState = {
   songs: {},
-  songList: []
+  songList: [],
 }
 
 const songInitialState = {
@@ -114,7 +114,7 @@ function songs(state = initialState, action) {
       return {
         ...state,
         songs: songs,
-        songList: songList
+        songList: songList,
       }
 
     case ONLINE_SONGS_LOADED:

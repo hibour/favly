@@ -156,7 +156,8 @@ var AudioMixer = {
   mixAudio: function(path1, path2, path3, callback) {
     AudioMixingManager.mixAudio(path1, path2, path3, (error, success) => {
       if (callback) {
-        callback(error, success);
+        var result = {result: success, audioFileURL: path3};
+        callback(error, result);
       }
     })
   }

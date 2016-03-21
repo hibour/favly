@@ -1,6 +1,7 @@
 package com.favly;
 
 import com.facebook.react.ReactActivity;
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -47,6 +48,7 @@ public class MainActivity extends ReactActivity {
 
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new LinearGradientPackage(),
                 this._codePush.getReactPackage(),
                 new RNFSPackage(),
                 new VectorIconsPackage(),

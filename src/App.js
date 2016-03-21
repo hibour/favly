@@ -35,9 +35,9 @@ class App extends Component {
                     <Route name="login" component={Login} title="Login" titleStyle={styles.title}/>
                     <Route name="register" component={Register} title="Register" schema="withoutAnimation"/>
 
-                    <Route name="songdetails" component={SongDetails} title="Song"/>
-                    <Route name="recordingdetails" component={RecordingDetails} title="Recording"/>
-                    <Route name="home" initial={true} component={Home} wrapRouter={true} title="Home"/>
+                    <Route name="songdetails" component={SongDetails} />
+                    <Route name="recordingdetails" component={RecordingDetails} />
+                    <Route name="home" initial={true} component={Home} wrapRouter={true} title="Kuhu"/>
                 </Router>
             </Provider>
         );

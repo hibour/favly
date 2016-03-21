@@ -10,14 +10,17 @@ var {
   Component,
   InteractionManager,
   Dimensions,
+  BackAndroid,
 } = React;
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 
-const Icon = require('react-native-vector-icons/Ionicons');
-const CommonStyle = require('../css/common.js')
+import Icon from 'react-native-vector-icons/Ionicons';
+import CommonStyle from '../css/common.js'
 
+import LinearGradient from 'react-native-linear-gradient';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import SongPlayer from '../components/SongPlayer';
 import Lyrics from '../components/Lyrics';
@@ -27,6 +30,10 @@ import SongPlayerActions from '../actions/songplayer'
 class SongDetails extends Component {
   constructor(props) {
     super(props);
+  }
+
+  componentWillMount() {
+    BackAndroid.addEventListener('hardwareBackPress', () => Actions.pop());
   }
 
   componentDidMount() {
@@ -60,7 +67,9 @@ class SongDetails extends Component {
 
           renderForeground={() => (
             <View key="parallax-header" style={ styles.parallaxHeader }>
-              <SongPlayer/>
+              <LinearGradient key="background" colors={['#00000000', '#000000ff']} style={styles.linearGradient}>
+                <SongPlayer/>
+              </LinearGradient>
             </View>
           )}
 
@@ -143,15 +152,18 @@ const styles = StyleSheet.create({
   parallaxHeader: {
     alignItems: 'center',
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: 'row',
     paddingTop: 150,
+    width: window.width,
   },
 
   largeArtwork: {
     width: window.width,
     height: PARALLAX_HEADER_HEIGHT,
   },
-
+  linearGradient: {
+    flex: 1,
+  },
 
   // TOP label
   fixedSection: {

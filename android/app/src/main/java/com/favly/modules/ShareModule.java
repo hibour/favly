@@ -48,9 +48,10 @@ public class ShareModule extends ReactContextBaseJavaModule {
             }
             File file = new File(options.getString("share_path"));
             if (file.exists()) {
+                Log.d(TAG, "File exists " + file.getAbsolutePath());
                 share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
             } else {
-                Log.d(TAG, "File doesnt exist " + file.getPath());
+                Log.d(TAG, "File doesnt exist " + file.getAbsolutePath());
                 callback.invoke("not_available");
                 return;
             }
