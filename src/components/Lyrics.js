@@ -62,7 +62,6 @@ class Lyrics extends Component {
   _scrollToHelper() {
     if (this.refs.listView && this._scrollPosition) {
       //InteractionManager.runAfterInteractions(() => {
-        console.log(">>> Trying to scroll to ", this._scrollPosition.y);
         this.refs.listView.scrollTo(this._scrollPosition);
       //})
     }

@@ -32,7 +32,7 @@
    * on the same Wi-Fi network.
    */
 #ifdef DEBUG
-  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.100:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.104:8081/index.ios.bundle?platform=ios&dev=true"];
 #else
 
   /**
@@ -56,6 +56,7 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
   return YES;
 }
 

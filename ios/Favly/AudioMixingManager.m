@@ -20,9 +20,11 @@
 
 RCT_EXPORT_MODULE();
 
-- (AVMutableCompositionTrack *) composition:(AVMutableComposition *)composition
+- (CMTime) composition:(AVMutableComposition *)composition
                   createCompositionTrackFor:(NSString *)path
                          withAudioMixParams:(NSMutableArray *)mixParams
+                              withStartTime:(CMTime)startTime
+                               withDuration:(CMTime)duration
                                  withVolume:(float)volume
 {
   AVMutableCompositionTrack* audioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio
@@ -32,9 +34,12 @@ RCT_EXPORT_MODULE();
   // grab the two audio assets as AVURLAssets according to the file paths
   AVURLAsset* masterAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:path] options:nil];
   AVAssetTrack *sourceTrack = [[masterAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+  
+  if (CMTIME_IS_INVALID(duration)) {
+    duration = masterAsset.duration;
+  }
 
-  CMTime startTime = kCMTimeZero;
-  CMTimeRange tRange = CMTimeRangeMake(startTime, masterAsset.duration);
+  CMTimeRange tRange = CMTimeRangeMake(startTime, duration);
   
   
   //Set Volume
@@ -51,9 +56,9 @@ RCT_EXPORT_MODULE();
   
   if (error)
   {
-    return nil;
+    return kCMTimeInvalid;
   }
-  return audioTrack;
+  return duration;
 }
 
 RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
@@ -67,8 +72,18 @@ RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
   // Generate a composition of the two audio assets that will be combined into
   // a single track
   AVMutableComposition* composition = [AVMutableComposition composition];
-  [self composition:composition createCompositionTrackFor:audio withAudioMixParams:audioMixParams withVolume:0.3];
-  [self composition:composition createCompositionTrackFor:vocal withAudioMixParams:audioMixParams withVolume:1.0];
+  CMTime recordDuration = [self composition:composition
+                  createCompositionTrackFor:vocal
+                         withAudioMixParams:audioMixParams
+                              withStartTime:CMTimeMakeWithSeconds(1, 10)
+                               withDuration:kCMTimeInvalid
+                                 withVolume:1.0];
+  [self composition:composition
+createCompositionTrackFor:audio
+ withAudioMixParams:audioMixParams
+      withStartTime:kCMTimeZero
+       withDuration:recordDuration
+         withVolume:0.15];
   
   AVAssetExportSession* exportSession = [[AVAssetExportSession alloc] initWithAsset:composition
                                                                          presetName:AVAssetExportPresetAppleM4A];

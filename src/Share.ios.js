@@ -1,11 +1,12 @@
 'use strict';
 
 var { NativeModules } = require('react-native');
-var ShareModule = NativeModules.ShareModule;
+
+var ShareManager = NativeModules.ShareManager;
 
 var RNShare = {
   open: function(options) {
-  	ShareModule.open(options);
+  	ShareManager.open(options);
   }
 };
 

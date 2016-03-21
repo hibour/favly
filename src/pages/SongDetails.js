@@ -18,7 +18,6 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import CommonStyle from '../css/common.js'
 
 import LinearGradient from 'react-native-linear-gradient';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
