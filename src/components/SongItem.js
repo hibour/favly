@@ -25,7 +25,10 @@ class SongItem extends Component {
           <Image source={{uri: song.thumbnail}} style={styles.thumbnail}/>
           <View style={styles.rightContainer}>
             <Text style={[CommonStyles.titleText, styles.title]}>{song.title}</Text>
-            <Text style={[CommonStyles.subtitleText, styles.year]}>{song.year}</Text>
+            <View style={styles.subDetails}>
+              <Text style={[CommonStyles.subtitleText, styles.album]}>{song.album}</Text>
+              <Text style={[CommonStyles.subtitleText, styles.year]}>{song.year}</Text>
+            </View>
           </View>
         </View>
       </TouchableHighlight>
@@ -39,16 +42,28 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 4,
+    marginLeft: 8,
   },
 
   rightContainer: {
     flex: 1,
-    marginLeft: 4,
+    marginLeft: 6,
+  },
+
+  subDetails: {
+    flexDirection: 'row',
   },
 
   title: {
-    marginBottom: 4,
+    marginBottom: 2,
   },
+
+  album: {
+    flex: 3,
+  },
+
   year: {
+    flex: 1,
+    textAlign: 'right',
   },
 });

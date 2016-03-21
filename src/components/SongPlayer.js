@@ -15,7 +15,6 @@ import SongPlayerActions from '../actions/songplayer'
 import RecordingsActions from '../actions/recordings'
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import CommonStyle from '../css/common.js'
 import moment from 'moment';
 
 class SongPlayer extends Component {

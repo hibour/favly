@@ -11,7 +11,8 @@ var {
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-const SongPlayerActions = require('../actions/songplayer')
+import SongPlayerActions from '../actions/songplayer'
+import {constants as CommonConstants} from '../css/common.js';
 
 var LineHeight = 46;
 
@@ -58,6 +59,6 @@ const styles = StyleSheet.create({
 
   active: {
     fontWeight: 'bold',
-    color: '#00bfff',
+    color: CommonConstants.primaryColor,
   }
 });

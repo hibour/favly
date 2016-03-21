@@ -16,10 +16,11 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
+import {styles as CommonStyles} from '../css/common.js';
 import RecordingPlayer from '../components/RecordingPlayer';
 import RecordingsActions from '../actions/recordings'
 import RecordingPlayerActions from '../actions/recordingplayer'
-const Icon = require('react-native-vector-icons/Ionicons');
+import Icon from 'react-native-vector-icons/Ionicons';
 
 class RecordingDetails extends Component {
   constructor(props) {
@@ -46,8 +47,11 @@ class RecordingDetails extends Component {
               <Image style={styles.largeArtwork} source={{uri: recording.thumbnail}}/>
               <RecordingPlayer/>
               <View style={styles.recordingFileControls}>
-                <Icon.Button name="share" backgroundColor="#3b5998" onPress={this.share.bind(this)}>
-                  <Text style={{fontSize: 14}}>Share</Text>
+                <Icon.Button name="share"
+                  style={CommonStyles.actionButton}
+                  backgroundColor="#3b5998"
+                  onPress={this.share.bind(this)}>
+                  <Text style={CommonStyles.actionText}>Share</Text>
                 </Icon.Button>
                 <TouchableOpacity onPress={this.delete.bind(this)} style={styles.button}>
                   <Icon name={'trash-b'} size={40} style={[styles.icon, styles.deleteIcon]}/>

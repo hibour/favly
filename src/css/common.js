@@ -4,7 +4,7 @@ const { StyleSheet, Dimensions } = React
 const window = Dimensions.get('window');
 
 const constants = {
-  primaryColor: '#3B5998',
+  primaryColor: '#00afef',
   primaryBackground: '#F5FCFF',
   secondaryColor: '#24CE84',
   highlightBackground: '#FFFFFF'
