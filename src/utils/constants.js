@@ -24,7 +24,7 @@ var Constants = {
   getFinalRecordPath: function(song, date) {
     var base = song.id + '_' + Math.floor(date.getTime()/1000);
     if (Platform.OS == 'ios') {
-      base = RNFS.CachesDirectoryPath + '/' + base;
+      base = RNFS.DocumentDirectoryPath + '/' + base;
       return base + '.m4a';
     } else {
       return base + '.wav';

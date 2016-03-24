@@ -19,7 +19,8 @@ const initialState = {
   currentSong: {},
   currentTime: 0,
   currentDuration: 0,
-  currentLyricIndex: 0,
+  currentLyricIndex: -1,
+  upcomingLyricIndex: -1,
   currentLRCPlayer: null,
 }
 
@@ -40,7 +41,8 @@ const songplayer = (state = initialState, action) => {
 
         currentTime: 0,
         currentDuration: 0,
-        currentLyricIndex: 0,
+        currentLyricIndex: -1,
+        upcomingLyricIndex: -1,
         currentLRCPlayer: lrcPlayer,
       }
 
@@ -92,12 +94,14 @@ const songplayer = (state = initialState, action) => {
       var upcomingHighlightedLine = -1;
       if (state.currentLRCPlayer) {
         highlightLine = Math.max(state.currentLRCPlayer.findLineAt(time) - 1, 0);
+        upcomingHighlightedLine = Math.max(state.currentLRCPlayer.findLineAt(time + 1000) - 1, 0);
       }
       return {
         ...state,
         currentTime: time,
         currentDuration: duration,
         currentLyricIndex: highlightLine,
+        upcomingLyricIndex: upcomingHighlightedLine,
       }
     default:
       return state

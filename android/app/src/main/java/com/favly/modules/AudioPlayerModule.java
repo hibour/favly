@@ -167,7 +167,7 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
                         sendEvent(getReactApplicationContext(), PLAYER_PROGRESS, values);
 
                         msg = obtainMessage(UPDATE_PROGRESS);
-                        sendMessageDelayed(msg, 1000);
+                        sendMessageDelayed(msg, 200);
                     }
                     break;
             }

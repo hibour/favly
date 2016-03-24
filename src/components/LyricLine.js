@@ -23,7 +23,8 @@ class LyricLine extends Component {
 
   render() {
     var active = this.props.rowID == this.props.lyricIndex;
-    return (<Text style={[styles.lyricLine, active && styles.active]}>
+    var upcomingActive = !active && this.props.rowID == this.props.upcomingLyricIndex;
+    return (<Text style={[styles.lyricLine, active && styles.active, upcomingActive && styles.upcomingActive]}>
       {this.props.text}
     </Text>);
   }
@@ -43,6 +44,7 @@ class LyricLine extends Component {
 function mapStateToProps(state) {
   return {
     lyricIndex: state.songplayer.currentLyricIndex,
+    upcomingLyricIndex: state.songplayer.upcomingLyricIndex,
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -60,5 +62,9 @@ const styles = StyleSheet.create({
   active: {
     fontWeight: 'bold',
     color: CommonConstants.primaryColor,
+  },
+
+  upcomingActive: {
+    fontWeight: 'bold',
   }
 });

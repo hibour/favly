@@ -26,13 +26,16 @@ RCT_EXPORT_MODULE();
                               withStartTime:(CMTime)startTime
                                withDuration:(CMTime)duration
                                  withVolume:(float)volume
+                                withTrackId:(int)trackId
 {
-  AVMutableCompositionTrack* audioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                                                   preferredTrackID:kCMPersistentTrackID_Invalid];
-  [audioTrack setPreferredVolume:volume];
-  
+  NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
+                                        forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
   // grab the two audio assets as AVURLAssets according to the file paths
-  AVURLAsset* masterAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:path] options:nil];
+  AVURLAsset* masterAsset = [[AVURLAsset alloc] initWithURL:[NSURL fileURLWithPath:path] options:options];
+  
+  AVMutableCompositionTrack* audioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                   preferredTrackID:trackId];
+  
   AVAssetTrack *sourceTrack = [[masterAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
   
   if (CMTIME_IS_INVALID(duration)) {
@@ -40,24 +43,22 @@ RCT_EXPORT_MODULE();
   }
 
   CMTimeRange tRange = CMTimeRangeMake(startTime, duration);
-  
-  
-  //Set Volume
-  AVMutableAudioMixInputParameters *trackMix = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:sourceTrack];
-  [trackMix setVolume:volume atTime:startTime];
-  [mixParams addObject:trackMix];
-  
   NSError* error = nil;
   [audioTrack insertTimeRange:tRange
                       ofTrack:sourceTrack
                        atTime:startTime
                         error:&error];
   
-  
   if (error)
   {
     return kCMTimeInvalid;
   }
+  
+  //Set Volume
+  AVMutableAudioMixInputParameters *trackMix = [AVMutableAudioMixInputParameters audioMixInputParameters];
+  [trackMix setVolume:volume atTime:kCMTimeZero];
+  [trackMix setTrackID:trackId];
+  [mixParams addObject:trackMix];
   return duration;
 }
 
@@ -77,13 +78,15 @@ RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
                          withAudioMixParams:audioMixParams
                               withStartTime:CMTimeMakeWithSeconds(1, 10)
                                withDuration:kCMTimeInvalid
-                                 withVolume:1.0];
+                                 withVolume:1.0
+                                withTrackId:1];
   [self composition:composition
 createCompositionTrackFor:audio
  withAudioMixParams:audioMixParams
       withStartTime:kCMTimeZero
        withDuration:recordDuration
-         withVolume:0.15];
+         withVolume:0.25
+        withTrackId:2];
   
   AVAssetExportSession* exportSession = [[AVAssetExportSession alloc] initWithAsset:composition
                                                                          presetName:AVAssetExportPresetAppleM4A];
@@ -93,12 +96,12 @@ createCompositionTrackFor:audio
     return;
   }
   
-  AVMutableAudioMix *audioMix = [AVMutableAudioMix audioMix];
-  audioMix.inputParameters = [NSArray arrayWithArray:audioMixParams];
   
   // configure export session  output with all our parameters
   exportSession.outputURL = [NSURL fileURLWithPath:destination];
-  exportSession.audioMix = audioMix;
+  AVMutableAudioMix *audioMix = [AVMutableAudioMix audioMix];
+  audioMix.inputParameters = [NSArray arrayWithArray:audioMixParams];
+  [exportSession setAudioMix:audioMix];
   exportSession.outputFileType = AVFileTypeAppleM4A; // output file type
   exportSession.shouldOptimizeForNetworkUse = YES;
   
