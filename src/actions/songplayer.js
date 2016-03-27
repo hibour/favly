@@ -10,148 +10,169 @@ exports.CHANGE_SONG = 'CHANGE_SONG'
 
 exports.REFRESH_SONG = 'REFRESH_SONG'
 exports.PLAY_SONG = 'PLAY_SONG'
-exports.PAUSE_SONG = 'PAUSE_SONG'
-
 exports.STOP_SONG = 'STOP_SONG'
+
+exports.START_RECORDING = 'START_RECORDING'
+exports.PAUSE_RECORDING = 'PAUSE_RECORDING'
+exports.STOP_RECORDING = 'STOP_RECORDING'
 
 exports.TOGGLE_MUTE = 'TOGGLE_MUTE'
 exports.SET_CURRENT_TIME = 'SET_CURRENT_TIME'
 
-exports.changeSong = function changeSong(song) {
+exports.changeSong = function(song) {
   return {
     type: actions.CHANGE_SONG,
     song: song
   }
 }
 
-var _resumeSong = function(dispatch, getState) {
-  var songplayer = getState().songplayer;
-  AudioPlayer.unpause();
-  AudioRecorder.startRecording();
-  dispatch({
-    type: actions.PLAY_SONG
-  });
+exports.playSong = function() {
+  return (dispatch, getState) => {
+    var songplayer = getState().songplayer;
+    var song = songplayer.currentSong;
+
+    // Prepare recording.
+    AudioRecorder.prepareRecordingAtPath(Constants.getRecordingPath(song),
+      {SampleRate: 44100.0, Channels: 2, AudioQuality: 'High' });
+
+    AudioPlayer.onStart = (data) => {
+      console.log(">>>> Audio player just started. starting recording!");
+      _startRecording(dispatch, getState);
+    }
+    AudioPlayer.setStartSubscription();
+
+    AudioPlayer.onProgress = (data) => {
+      dispatch({
+        type: actions.SET_CURRENT_TIME,
+        duration: data.currentDuration * 1000,
+        time: data.currentTime * 1000
+      })
+    }
+    AudioPlayer.setProgressSubscription();
+
+    AudioPlayer.onFinished = (data) => {
+      _stopSong(dispatch, getState);
+    }
+    AudioPlayer.setFinishedSubscription();
+
+    // Start playing the song.
+    AudioPlayer.play(Constants.getSongPath(song), {sessionCategory: 'PlayAndRecord'});
+    dispatch({
+      type: actions.PLAY_SONG
+    });
+  }
 }
 
-var _playSong = function(dispatch, getState) {
+function _stopSong(dispatch, getState) {
   var songplayer = getState().songplayer;
-  var song = songplayer.currentSong;
-
-  // Prepare recording.
-  AudioRecorder.prepareRecordingAtPath(
-    Constants.getRecordingPath(songplayer.currentSong),
-    {SampleRate: 44100.0, Channels: 2, AudioQuality: 'High' }
-  );
-
-  var didWeStartRecording = false;
-  AudioPlayer.onStart = (data) => {
-    if (!didWeStartRecording) {
-      didWeStartRecording = true;
-      AudioRecorder.startRecording();
-      console.log(">>>>> Recording started at " + new Date().getTime());
-    }
-  }
-
-  AudioPlayer.onProgress = (data) => {
+  if (songplayer.isActive) {
+    // TODO User is leaving the session while reording is active.
+    // Show confirmation popup.
+    AudioPlayer.stop();
+    AudioRecorder.stopRecording();
     dispatch({
-      type: actions.SET_CURRENT_TIME,
-      duration: data.currentDuration * 1000,
-      time: data.currentTime * 1000
+      type: actions.STOP_SONG
     })
   }
-
-  AudioPlayer.onFinished = (data) => {
-    actions.stopSong();
-  }
-  AudioPlayer.setStartSubscription();
-  AudioPlayer.setProgressSubscription();
-  AudioPlayer.setFinishedSubscription();
-
-  // Start playing the song.
-  AudioPlayer.play(Constants.getSongPath(song), {sessionCategory: 'PlayAndRecord'});
-  dispatch({
-    type: actions.PLAY_SONG
-  });
 }
 
-exports.playSong = function playSong() {
+exports.stopSong = function() {
   return (dispatch, getState) => {
-    var songplayer = getState().songplayer;
-    if (songplayer.isActive) {
-      _resumeSong(dispatch, getState);
-    } else {
-      _playSong(dispatch, getState);
-    }
+    _stopSong(dispatch, getState);
   }
 }
 
-exports.pauseSong = function pauseSong() {
+function _startRecording(dispatch, getState) {
+  var songplayer = getState().songplayer;
+      console.log(">> _start recording ", songplayer.isRecording, songplayer.isPlaying);
+  if (!songplayer.isRecording && songplayer.isPlaying) {
+    AudioRecorder.startRecording();
+    AudioPlayer.getCurrentTime((time) => {
+      dispatch({
+        type: actions.START_RECORDING,
+        time: time * 1000,
+      })
+    })
+  }
+}
+
+exports.startRecording = function() {
+  return (dispatch, getState) => {
+    _startRecording(dispatch, getState);
+  }
+}
+
+exports.pauseRecording = function() {
   return (dispatch, getState) => {
     var songplayer = getState().songplayer;
-    if (songplayer.isPlaying) {
-      AudioPlayer.pause();
+    if (songplayer.isRecording) {
       AudioRecorder.pauseRecording();
-      dispatch({
-        type: actions.PAUSE_SONG
+      AudioPlayer.getCurrentTime((time) => {
+        dispatch({
+          type: actions.PAUSE_RECORDING,
+          time: time * 1000,
+        })
       })
     }
   }
 }
 
-exports.stopSong = function stopSong() {
+exports.stopRecording = function() {
   return (dispatch, getState) => {
     var songplayer = getState().songplayer;
-    if (songplayer.isPlaying) {
-      AudioRecorder.onFinished = function(data) {
-        if (data.status != 'OK') {
-          console.log(">>> Recording failed ", data);
-          // TODO handle this failure.
-          return;
-        }
-        songplayer = getState().songplayer;
+    if (songplayer.isRecording) {
+      AudioPlayer.getCurrentTime((time) => {
+        dispatch({
+          type: actions.STOP_RECORDING,
+          time: time * 1000,
+        })
         var song = songplayer.currentSong;
-
         var path = Constants.getFinalRecordPath(song, new Date());
-        AudioMixer.mixAudio(Constants.getSongPath(song),
-          data.audioFileURL,
-          path,
-          (error, success) => {
-            if (!error) {
-              console.log(">>> No Error, Yaay! ", success);
-              dispatch({
-                type: RecordingsActions.ADD_RECORDING,
-                recording: {
-                  path: success.audioFileURL,
-                  title: song.title,
-                  songid: song.id,
-                  album: song.album,
-                  thumbnail: song.thumbnail,
-                  time: moment().toISOString()
-                }
-              })
-            } else {
-              console.log(">>> Failed :( ", error, success);
-              //TODO Show error to the user.
-            }
-          })
-      }
+        console.log(">>>> Recorded the song at ", songplayer.recordingPeriods);
+        AudioRecorder.onFinished = function(data) {
+          if (data.status != 'OK') {
+            console.log(">>> Recording failed ", data);
+            // TODO handle this failure.
+            return;
+          }
 
-      AudioPlayer.stop();
-      AudioRecorder.stopRecording();
-      dispatch({
-        type: actions.STOP_SONG
+          AudioMixer.mixAudio(Constants.getSongPath(song),
+            data.audioFileURL,
+            songplayer.recordingPeriods,
+            path,
+            (error, success) => {
+              if (!error) {
+                console.log(">>> No Error, Yaay! ", success);
+                dispatch({
+                  type: RecordingsActions.ADD_RECORDING,
+                  recording: {
+                    path: success.audioFileURL,
+                    title: song.title,
+                    songid: song.id,
+                    album: song.album,
+                    thumbnail: song.thumbnail,
+                    time: moment().toISOString()
+                  }
+                })
+              } else {
+                console.log(">>> Failed :( ", error, success);
+                //TODO Show error to the user.
+              }
+            })
+        }
+        AudioRecorder.stopRecording();
       })
     }
   }
 }
 
-exports.toggleMute = function toggleMute() {
+exports.toggleMute = function() {
   return {
     type: actions.TOGGLE_MUTE
   }
 }
 
-exports.setCurrentTime = function setCurrentTime(time) {
+exports.offsetPlayerTime = function(time) {
   return {
     type: actions.SET_CURRENT_TIME,
     time: time

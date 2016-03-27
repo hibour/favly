@@ -12,6 +12,7 @@
 #import "RCTEventDispatcher.h"
 #import <AVFoundation/AVFoundation.h>
 
+NSString *const AudioPlayerEventStarted = @"playerStarted";
 NSString *const AudioPlayerEventProgress = @"playerProgress";
 NSString *const AudioPlayerEventFinished = @"playerFinished";
 
@@ -44,6 +45,10 @@ RCT_EXPORT_MODULE();
 
   if (_prevProgressUpdateTime == nil ||
    (([_prevProgressUpdateTime timeIntervalSinceNow] * -1000.0) >= _progressUpdateInterval)) {
+    if (_prevProgressUpdateTime == nil) {
+      [_bridge.eventDispatcher sendDeviceEventWithName:AudioPlayerEventStarted body:@{}];
+    }
+    
       [_bridge.eventDispatcher sendDeviceEventWithName:AudioPlayerEventProgress body:@{
       @"currentTime": [NSNumber numberWithFloat:_currentTime],
       @"currentDuration": [NSNumber numberWithFloat:_currentDuration]
@@ -57,7 +62,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)startProgressTimer {
-  _progressUpdateInterval = 100;
+  _progressUpdateInterval = 50;
   _prevProgressUpdateTime = nil;
 
   [self stopProgressTimer];

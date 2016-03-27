@@ -48,13 +48,6 @@ class RecordingPlayer extends Component {
                     <Icon name={'pause'} size={60} style={[styles.icon, styles.pauseIcon]}/>
                   </TouchableOpacity>
                 }
-
-                {/* stop */}
-                {this.props.isPlaying ?
-                  <TouchableOpacity onPress={this.stop.bind(this)} style={styles.button}>
-                    <Icon name={'stop'} size={40} style={[styles.icon, styles.stopIcon]}/>
-                  </TouchableOpacity> : null
-                }
               </View>
             </View>);
   }
@@ -76,13 +69,10 @@ class RecordingPlayer extends Component {
   }
 
   play() {
-    this.props.playRecording();
+    this.props.startRecordingPlayback();
   }
   pause() {
-    this.props.pauseRecording();
-  }
-  stop() {
-    this.props.stopRecording();
+    this.props.pauseRecordingPlayback();
   }
 
   _getSoundTimer() {
@@ -157,15 +147,5 @@ const styles = StyleSheet.create({
 
   icon: {
     color: 'black',
-  },
-
-  playIcon: {
-    color: 'green'
-  },
-  pauseIcon: {
-    color: 'blue'
-  },
-  stopIcon: {
-    color: 'red'
   },
 });

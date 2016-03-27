@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: constants.primaryBackground,
+    height: 600,
   },
 
   listview: {
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
 
 
   actionText: {
-    color: '#fff',
+    color: 'white',
     fontSize: 16,
     textAlign: 'center',
   },
@@ -64,17 +65,15 @@ const styles = StyleSheet.create({
     backgroundColor: constants.primaryColor,
     borderColor: 'transparent',
     borderWidth: 1,
-    paddingLeft: 16,
-    paddingTop: 14,
-    paddingBottom: 16,
+    padding: 8,
+    justifyContent: 'center',
   },
   actionButton2: {
     backgroundColor: constants.secondaryColor,
     borderColor: 'transparent',
     borderWidth: 1,
-    paddingLeft: 16,
-    paddingTop: 14,
-    paddingBottom: 16,
+    padding: 8,
+    justifyContent: 'center',
   },
 })
 

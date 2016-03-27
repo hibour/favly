@@ -6,6 +6,8 @@ var {
   View,
   Component,
   ListView,
+  TextInput,
+  Dimensions,
 } = React;
 
 import { bindActionCreators } from 'redux'
@@ -27,19 +29,30 @@ class SongList extends Component {
 
   render() {
     this.dataSource = this.dataSource.cloneWithRows(this.props.songs);
-    return (<ListView
+    return (<View style={[CommonStyles.container, styles.searchContainer]}>
+      {this.renderSearchBar()}
+      <ListView
         dataSource={this.dataSource}
         renderRow={this.renderSong.bind(this)}
-        style={[CommonStyles.listView, styles.listView]}
-      />);
+        style={[CommonStyles.listView, styles.listView]}/>
+    </View>);
   }
 
   renderSearchBar() {
       return (
-        <View style={styles.searchCell}>
-          <TextInput onChange={this.onSearchChange} placeholder={'Search a Track'} style={styles.searchContainer}/>
-        </View>
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="Search A Song"
+          style={styles.searchEditText}
+          onEndEditing={this.onSearchChange}/>
       )
+    }
+
+  onSearchChange(event: Object) {
+      var searchTerm = event.nativeEvent.text.toLowerCase();
+      this.props.searchSongs(searchTerm);
+      console.log(">>> Search term ", searchTerm);
     }
 
   renderSong(song) {
@@ -59,23 +72,28 @@ function mapDispatchToProps(dispatch) {
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SongList)
 
+const window = Dimensions.get('window')
 const styles = StyleSheet.create({
   listView: {
   },
 
-  searchCell: {
+  searchContainer: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  searchContainer: {
-    height: 40,
-    width: 100,
+  searchEditText: {
+    margin: 5,
+    padding: 5,
+    fontSize: 15,
+    height: 30,
+    width: window.width - 10,
     flex: 1,
-    margin: 4,
-    padding: 4,
     borderColor: 'gray',
     color: 'black',
-    borderWidth: 1
+    backgroundColor: 'white',
+    borderWidth: 0.5,
    },
 });

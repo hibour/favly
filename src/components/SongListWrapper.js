@@ -5,7 +5,6 @@ var {
   Text,
   View,
   Component,
-  Dimensions,
 } = React;
 
 import { bindActionCreators } from 'redux'
@@ -59,7 +58,6 @@ function mapDispatchToProps(dispatch) {
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SongListWrapper)
 
-const window = Dimensions.get('window')
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',

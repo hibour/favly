@@ -37,15 +37,15 @@ class Home extends Component {
         tabBarPosition="bottom"
         renderTabBar={() => <FavlyTabBar />}>
 
-        <ScrollView tabLabel="music-note" style={[CommonStyles.homeTabView, styles.tabView]}>
+        <ScrollView tabLabel="music-note" style={[CommonStyles.homeTabView]}>
           <SongListWrapper></SongListWrapper>
         </ScrollView>
 
-        <ScrollView tabLabel="ios-recording" style={[CommonStyles.homeTabView, styles.tabView]}>
+        <ScrollView tabLabel="ios-recording" style={[CommonStyles.homeTabView]}>
           <RecordingListWrapper></RecordingListWrapper>
         </ScrollView>
 
-        <ScrollView tabLabel="more" style={[CommonStyles.homeTabView, styles.tabView]}>
+        <ScrollView tabLabel="more" style={[CommonStyles.homeTabView]}>
           <View style={[CommonStyles.container]}>
             <Text>Settings</Text>
           </View>
@@ -59,9 +59,6 @@ class Home extends Component {
 module.exports = Home;
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
-  },
-
-  tabView: {
+    marginTop: 60,
   },
 });

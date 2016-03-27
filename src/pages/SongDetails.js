@@ -67,14 +67,14 @@ class SongDetails extends Component {
           renderForeground={() => (
             <View key="parallax-header" style={ styles.parallaxHeader }>
               <LinearGradient key="background" colors={['#00000000', '#000000ff']} style={styles.linearGradient}>
-                <SongPlayer/>
+                <SongPlayer style={styles.player}/>
               </LinearGradient>
             </View>
           )}
 
           renderStickyHeader={() => (
             <View key="sticky-header" style={ styles.stickySection }>
-              <SongPlayer/>
+              <SongPlayer style={styles.player}/>
             </View>
           )}
 
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    paddingTop: 150,
+    paddingTop: 165,
     width: window.width,
   },
 
@@ -160,7 +160,13 @@ const styles = StyleSheet.create({
     width: window.width,
     height: PARALLAX_HEADER_HEIGHT,
   },
+
   linearGradient: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+  },
+  player: {
     flex: 1,
   },
 

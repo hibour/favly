@@ -16,7 +16,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
-import {styles as CommonStyles} from '../css/common.js';
+import {styles as CommonStyles, constants as CommonConstants} from '../css/common.js';
 import RecordingPlayer from '../components/RecordingPlayer';
 import RecordingsActions from '../actions/recordings'
 import RecordingPlayerActions from '../actions/recordingplayer'
@@ -49,7 +49,6 @@ class RecordingDetails extends Component {
               <View style={styles.recordingFileControls}>
                 <Icon.Button name="share"
                   style={CommonStyles.actionButton}
-                  backgroundColor="#3b5998"
                   onPress={this.share.bind(this)}>
                   <Text style={CommonStyles.actionText}>Share</Text>
                 </Icon.Button>

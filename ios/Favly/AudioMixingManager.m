@@ -20,11 +20,10 @@
 
 RCT_EXPORT_MODULE();
 
-- (CMTime) composition:(AVMutableComposition *)composition
+- (AVMutableCompositionTrack *) composition:(AVMutableComposition *)composition
                   createCompositionTrackFor:(NSString *)path
                          withAudioMixParams:(NSMutableArray *)mixParams
-                              withStartTime:(CMTime)startTime
-                               withDuration:(CMTime)duration
+                              withDurations:(NSArray *)durations
                                  withVolume:(float)volume
                                 withTrackId:(int)trackId
 {
@@ -38,20 +37,27 @@ RCT_EXPORT_MODULE();
   
   AVAssetTrack *sourceTrack = [[masterAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
   
-  if (CMTIME_IS_INVALID(duration)) {
-    duration = masterAsset.duration;
-  }
-
-  CMTimeRange tRange = CMTimeRangeMake(startTime, duration);
   NSError* error = nil;
-  [audioTrack insertTimeRange:tRange
-                      ofTrack:sourceTrack
-                       atTime:startTime
-                        error:&error];
-  
-  if (error)
-  {
-    return kCMTimeInvalid;
+  if (durations == nil) {
+    [audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, masterAsset.duration)
+                        ofTrack:sourceTrack
+                         atTime:kCMTimeZero
+                          error:&error];
+    if (error) {
+      return nil;
+    }
+  } else {
+    for (NSDictionary *duration in durations) {
+      CMTime start = CMTimeMake(duration[@"start"], 1000);
+      CMTime end = CMTimeMake(duration[@"end"], 1000);
+      [audioTrack insertTimeRange:CMTimeRangeMake(start, end)
+                          ofTrack:sourceTrack
+                           atTime:start
+                            error:&error];
+      if (error) {
+        return nil;
+      }
+    }
   }
   
   //Set Volume
@@ -59,11 +65,12 @@ RCT_EXPORT_MODULE();
   [trackMix setVolume:volume atTime:kCMTimeZero];
   [trackMix setTrackID:trackId];
   [mixParams addObject:trackMix];
-  return duration;
+  return audioTrack;
 }
 
 RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
                   withAudio:(NSString *)vocal
+                  withPeriods:(NSArray *)periods
                   withDestination:(NSString *)destination
                   withCallback:(RCTResponseSenderBlock)callback)
 {
@@ -73,19 +80,17 @@ RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
   // Generate a composition of the two audio assets that will be combined into
   // a single track
   AVMutableComposition* composition = [AVMutableComposition composition];
-  CMTime recordDuration = [self composition:composition
-                  createCompositionTrackFor:vocal
-                         withAudioMixParams:audioMixParams
-                              withStartTime:CMTimeMakeWithSeconds(1, 10)
-                               withDuration:kCMTimeInvalid
-                                 withVolume:1.0
-                                withTrackId:1];
+  [self composition:composition
+createCompositionTrackFor:vocal
+ withAudioMixParams:audioMixParams
+      withDurations:nil
+         withVolume:0.9
+        withTrackId:1];
   [self composition:composition
 createCompositionTrackFor:audio
  withAudioMixParams:audioMixParams
-      withStartTime:kCMTimeZero
-       withDuration:recordDuration
-         withVolume:0.25
+      withDurations:periods
+         withVolume:0.2
         withTrackId:2];
   
   AVAssetExportSession* exportSession = [[AVAssetExportSession alloc] initWithAsset:composition

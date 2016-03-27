@@ -14,6 +14,7 @@ exports.DOWNLOADING_SONG_ASSETS = 'DOWNLOADING_SONG_ASSETS'
 exports.UPDATE_DOWNLOAD_PROGRESS = 'UPDATE_DOWNLOAD_PROGRESS'
 exports.DOWNLOAD_COMPLETE = 'DOWNLOAD_COMPLETE'
 
+exports.SEARCH_SONGS = 'SEARCH_SONGS'
 
 exports.loadOfflineSongs = function loadOfflineSongs() {
   return dispatch => {
@@ -91,5 +92,18 @@ exports.downloadSong = function downloadSong(song) {
         }, isCurrentSong, getState)
       });
     });
+  }
+
+  exports.searchSongs = function(searchTerm) {
+    return (dispatch, getState) => {
+      var songs = getState().songs;
+      var filteredSongs = songs.filter((song) => {
+        return song.title.indexOf(searchTerm) || song.album.indexOf(searchTerm);
+      })
+      dispatch({
+        type: actions.REPLACE_SONGS_LIST,
+        id: filteredSongs
+      })
+    }
   }
 }

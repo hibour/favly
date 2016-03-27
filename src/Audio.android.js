@@ -109,7 +109,7 @@ var AudioRecorder = {
 };
 
 var AudioMixer = {
-  mixAudio: function(path1, path2, path3, callback) {
+  mixAudio: function(path1, path2, periods, path3, callback) {
     // Mixing
     // atrim=start=0.25
     AudioMixingModule.mixAudio(" -i " + path1 + " -i " + path2 +

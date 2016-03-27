@@ -1,0 +1,249 @@
+{
+  "songs" : [ {
+    "album" : "Krishna Gadi Veera Premagadha",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/kgvpg/nuvvante_na_navvu.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/kgvpg/kgvpg.jpg",
+    "title" : "Nuvvante Naa Navvu",
+    "track" : "https://shining-fire-6281.firebaseapp.com/kgvpg/nuvvante_na_navvu.mp3",
+    "version" : "1",
+    "year" : "2016"
+  }, {
+    "album" : "S/O Satyamurthi",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/sosatyamurthi/come_to_the_party.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/sosatyamurthi/sosatyamurthi.jpg",
+    "title" : "Come To The Party",
+    "track" : "https://shining-fire-6281.firebaseapp.com/sosatyamurthi/come_to_the_party.mp3",
+    "version" : "1",
+    "year" : "2015"
+  },
+  {
+    "album" : "S/o Satyamurthi",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/sosatyamurthi/jaruko.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/sosatyamurthi/sosatyamurthi.jpg",
+    "title" : "Jaaruko",
+    "track" : "https://shining-fire-6281.firebaseapp.com/sosatyamurthi/jaaruko.mp3",
+    "version" : "1",
+    "year" : "2015"
+  },
+
+  {
+    "album" : "Oohalu Gusa Gusalaade",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/oohalu_gusagusalaade/em_sandeham_ledu.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/oohalu_gusagusalaade/oohalu_gusagusalaade.jpg",
+    "title" : "Em Sandeham Ledu",
+    "track" : "https://shining-fire-6281.firebaseapp.com/oohalu_gusagusalaade/em_sandeham_ledu.mp3",
+    "version" : "1",
+    "year" : "2015"
+  },
+
+  {
+    "album" : "Orange",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/orange/nenu_nuvvantu.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/orange/orange.jpeg",
+    "title" : "Nenu Nuvvantu",
+    "track" : "https://shining-fire-6281.firebaseapp.com/orange/nenu_nuvvantu.mp3",
+    "version" : "1",
+    "year" : "2010"
+  },
+
+  {
+    "album" : "Thammudu",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/tammudu/pedavi_datani.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/tammudu/tammudu.jpg",
+    "title" : "Pedavi Datani Mata",
+    "track" : "https://shining-fire-6281.firebaseapp.com/tammudu/pedavi_datani.mp3",
+    "version" : "1",
+    "year" : "2000"
+  },
+
+  {
+    "album" : "Manam",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/manam/chinni_chinni_aasalu.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/manam/manam.jpeg",
+    "title" : "Chinni Chinni Aasalu",
+    "track" : "https://shining-fire-6281.firebaseapp.com/manam/chinni_chinni_aasalu.mp3",
+    "version" : "1",
+    "year" : "2014"
+  },
+
+  {
+    "album" : "Baanam",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/baanam/naalo_nenena.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/baanam/baanam.jpeg",
+    "title" : "Naalo Nenena",
+    "track" : "https://shining-fire-6281.firebaseapp.com/baanam/naalo_nenena.mp3",
+    "version" : "1",
+    "year" : "2012"
+  },
+
+  {
+    "album" : "Endukante Premanta",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/endukante_premanta/nee_choopule.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/endukante_premanta/endukante_premanta.jpeg",
+    "title" : "Nee Choopule Deepavali",
+    "track" : "https://shining-fire-6281.firebaseapp.com/endukante_premanta/nee_choopule.mp3",
+    "version" : "1",
+    "year" : "2012"
+  },
+
+  {
+    "album" : "Seetharamayya Gari Manavaralu",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/seetharamayya_gari_manavaralu/poosindipoosindi.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/seetharamayya_gari_manavaralu/albumart.jpg",
+    "title" : "Poosindi Poosindi Punnaga",
+    "track" : "https://shining-fire-6281.firebaseapp.com/seetharamayya_gari_manavaralu/poosindipoosindi.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Antam",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/antam/neenavvucheppindi.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/antam/albumart.jpg",
+    "title" : "Nee Navvu Cheppindi Naatho",
+    "track" : "https://shining-fire-6281.firebaseapp.com/antam/neenavvucheppindi.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Bharateeyudu",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/bharateeyudu/pachchanichilukalu.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/bharateeyudu/albumart.jpg",
+    "title" : "Pacchani Chilukalu Todunte",
+    "track" : "https://shining-fire-6281.firebaseapp.com/bharateeyudu/pachchanichilukalu.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Nuvvu Nenu Prema",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/nuvvu_nenu_prema/newyorknagaram.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/nuvvu_nenu_prema/albumart.jpg",
+    "title" : "Newyork Nagaram Nidaroye Vela",
+    "track" : "https://shining-fire-6281.firebaseapp.com/nuvvu_nenu_prema/newyorknagaram.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Geetanjali",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/geetanjali/aamani.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/geetanjali/albumart.jpg",
+    "title" : "Aamani Paadave",
+    "track" : "https://shining-fire-6281.firebaseapp.com/geetanjali/aamani.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Premikudu",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/premikudu/andamaina.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/premikudu/albumart.jpg",
+    "title" : "Andamaina Prema Rani",
+    "track" : "https://shining-fire-6281.firebaseapp.com/premikudu/andamaina.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Premikula Roju",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/premikula_roju/vaalukanuladaana.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/premikula_roju/albumart.jpg",
+    "title" : "Vaalu Kanuladaana",
+    "track" : "https://shining-fire-6281.firebaseapp.com/premikula_roju/vaalukanuladaana.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Geetanjali",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/geetanjali/jallanta.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/geetanjali/albumart.jpg",
+    "title" : "Vallanta Jallanta",
+    "track" : "https://shining-fire-6281.firebaseapp.com/geetanjali/jallanta.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+ {
+    "album" : "Sakhi",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/sakhi/alaipongera.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/sakhi/sakhi.png",
+    "title" : "Alai Pongera Kanna",
+    "track" : "https://shining-fire-6281.firebaseapp.com/sakhi/alaipongera.mp3",
+    "version" : "1",
+    "year" : "2000"
+  },
+
+  {
+    "album" : "Alludugaru",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/alludugaru/muddabanti_navvulo.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/alludugaru/albumart.jpg",
+    "title" : "Muddabanti Navvulo",
+    "track" : "https://shining-fire-6281.firebaseapp.com/alludugaru/muddabanti_navvulo.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Bombai Priyudu",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/bombai_priyudu/balamuralikrishna.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/bombai_priyudu/albumart.jpg",
+    "title" : "Bala Murali Krishna",
+    "track" : "https://shining-fire-6281.firebaseapp.com/bombai_priyudu/balamuralikrishna.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Jeans",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/jeans/priyapriya.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/jeans/albumart.jpg",
+    "title" : "Priya Priya",
+    "track" : "https://shining-fire-6281.firebaseapp.com/jeans/priyapriya.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Neevalle Neevalle",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/neevalle_neevalle/junepothey.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/neevalle_neevalle/albumart.jpg",
+    "title" : "June Pothey",
+    "track" : "https://shining-fire-6281.firebaseapp.com/neevalle_neevalle/junepothey.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Oye",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/oye/povodheprema.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/oye/albumart.jpg",
+    "title" : "Povodhe Prema",
+    "track" : "https://shining-fire-6281.firebaseapp.com/oye/povodheprema.mp3",
+    "version" : "1",
+    "year" : "1994"
+  },
+
+  {
+    "album" : "Roja",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/roja/paruvamvanaga.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/roja/albumart.jpg",
+    "title" : "Paruvam Vaanaga",
+    "track" : "https://shining-fire-6281.firebaseapp.com/roja/paruvamvanaga.mp3",
+    "version" : "1",
+    "year" : "1992"
+  },
+
+  {
+    "album" : "Vaasu",
+    "lyrics" : "https://shining-fire-6281.firebaseapp.com/vasu/oprema.lrc",
+    "thumbnail" : "https://shining-fire-6281.firebaseapp.com/vasu/albumart.jpg",
+    "title" : "O Prema",
+    "track" : "https://shining-fire-6281.firebaseapp.com/vasu/oprema.mp3",
+    "version" : "1",
+    "year" : "1994"
+  }
+]
+}

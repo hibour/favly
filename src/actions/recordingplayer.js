@@ -4,19 +4,19 @@ var actions = exports = module.exports
 
 exports.CHANGE_RECORDING = 'CHANGE_RECORDING'
 exports.REFRESH_RECORDING = 'REFRESH_RECORDING'
-exports.PLAY_RECORDING = 'PLAY_RECORDING'
-exports.PAUSE_RECORDING = 'PAUSE_RECORDING'
+exports.START_RECORDING_PLAYBACK = 'START_RECORDING_PLAYBACK'
+exports.PAUSE_RECORDING_PLAYBACK = 'PAUSE_RECORDING_PLAYBACK'
 exports.STOP_RECORDING_PLAYBACK = 'STOP_RECORDING_PLAYBACK'
 exports.SET_RECORDING_CURRENT_TIME = 'SET_RECORDING_CURRENT_TIME'
 
-exports.changeRecording = function changeRecording(recording) {
+exports.changeRecording = function(recording) {
   return {
     type: actions.CHANGE_RECORDING,
     recording: recording
   }
 }
 
-exports.playRecording = function playRecording() {
+exports.startRecordingPlayback = function() {
   return (dispatch, getState) => {
     var recordingplayer = getState().recordingplayer;
     var recording = recordingplayer.currentRecording;
@@ -30,30 +30,30 @@ exports.playRecording = function playRecording() {
         })
       };
       AudioPlayer.onFinished = (data) => {
-        actions.pauseRecording();
+        actions.pauseRecordingPlayback();
       };
       AudioPlayer.setProgressSubscription();
       AudioPlayer.setFinishedSubscription();
       dispatch({
-        type: actions.PLAY_RECORDING
+        type: actions.START_RECORDING_PLAYBACK
       });
     }
   };
 }
 
-exports.pauseRecording = function pauseRecording() {
+exports.pauseRecordingPlayback = function() {
   return (dispatch, getState) => {
     var recordingplayer = getState().recordingplayer;
     if (recordingplayer.isPlaying) {
       AudioPlayer.pause();
       dispatch({
-        type: actions.PAUSE_RECORDING
+        type: actions.PAUSE_RECORDING_PLAYBACK
       });
     }
   };
 }
 
-exports.stopRecording = function stopRecording() {
+exports.stopRecordingPlayback = function() {
   return (dispatch, getState) => {
     var recordingplayer = getState().recordingplayer;
     if (recordingplayer.isPlaying) {

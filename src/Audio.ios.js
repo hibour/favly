@@ -23,9 +23,6 @@ var AudioPlayer = {
       playbackOptions = options;
     }
     AudioPlayerManager.play(path, playbackOptions);
-    if (this.onStart) {
-      this.onStart();
-    }
   },
   playWithUrl: function(url, options) {
     var playbackOptions = null;
@@ -37,9 +34,6 @@ var AudioPlayer = {
       playbackOptions = options;
     }
     AudioPlayerManager.playWithUrl(url, playbackOptions);
-    if (this.onStart) {
-      this.onStart(data);
-    }
   },
   pause: function() {
     AudioPlayerManager.pause();
@@ -58,6 +52,14 @@ var AudioPlayer = {
   },
 
   setStartSubscription: function() {
+    if (this.startSubscription) this.startSubscription.remove();
+    this.startSubscription = DeviceEventEmitter.addListener('playerStarted',
+      (data) => {
+        if (this.onStart) {
+          this.onStart(data);
+        }
+      }
+    );
   },
   setProgressSubscription: function() {
     if (this.progressSubscription) this.progressSubscription.remove();
@@ -89,6 +91,9 @@ var AudioPlayer = {
       callback(currentTime);
     })
   },
+  onStart: null,
+  onFinished: null,
+  onProgress: null,
 };
 
 var AudioRecorder = {
@@ -153,8 +158,8 @@ var AudioRecorder = {
 };
 
 var AudioMixer = {
-  mixAudio: function(path1, path2, path3, callback) {
-    AudioMixingManager.mixAudio(path1, path2, path3, (error, success) => {
+  mixAudio: function(path1, path2, periods, path3, callback) {
+    AudioMixingManager.mixAudio(path1, path2, periods, path3, (error, success) => {
       if (callback) {
         var result = {result: success, audioFileURL: path3};
         callback(error, result);

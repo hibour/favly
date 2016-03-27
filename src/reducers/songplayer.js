@@ -3,8 +3,11 @@ const {
 
   REFRESH_SONG,
   PLAY_SONG,
-  PAUSE_SONG,
   STOP_SONG,
+
+  START_RECORDING,
+  PAUSE_RECORDING,
+  STOP_RECORDING,
 
   TOGGLE_MUTE,
   SET_CURRENT_TIME
@@ -13,6 +16,7 @@ var LRC = require('../utils/lrc')
 
 const initialState = {
   isPlaying: false,
+  isRecording: false,
   isActive: false,
   isMute: false,
 
@@ -22,6 +26,9 @@ const initialState = {
   currentLyricIndex: -1,
   upcomingLyricIndex: -1,
   currentLRCPlayer: null,
+
+  recordingStartedAt: -1,
+  recordingPeriods: [], // {start: 0, end: 0}
 }
 
 const songplayer = (state = initialState, action) => {
@@ -33,16 +40,8 @@ const songplayer = (state = initialState, action) => {
         lrcPlayer = new LRC.Lrc(song.lyricsData);
       }
       return {
-        ...state,
+        ...initialState,
         currentSong: song,
-        isPlaying: false,
-        isActive: false,
-        isMute: false,
-
-        currentTime: 0,
-        currentDuration: 0,
-        currentLyricIndex: -1,
-        upcomingLyricIndex: -1,
         currentLRCPlayer: lrcPlayer,
       }
 
@@ -68,16 +67,39 @@ const songplayer = (state = initialState, action) => {
         isActive: true,
       }
 
-    case PAUSE_SONG:
-      return {
-        ...state,
-        isPlaying: false,
-      }
-
     case STOP_SONG:
       return {
         ...state,
         isPlaying: false,
+        isActive: false,
+      }
+
+    case START_RECORDING:
+      return {
+        ...state,
+        recordingStartedAt: action.time,
+        isRecording: true,
+        isActive: true,
+      }
+
+    case PAUSE_RECORDING:
+      var recordingPeriods = Object.assign([], state.recordingPeriods);
+      recordingPeriods.push({start: state.recordingStartedAt, end: action.time});
+      return {
+        ...state,
+        recordingStartedAt: -1,
+        recordingPeriods: recordingPeriods,
+        isRecording: false,
+      }
+
+    case STOP_RECORDING:
+      var recordingPeriods = Object.assign([], state.recordingPeriods);
+      recordingPeriods.push({start: state.recordingStartedAt, end: action.time});
+      return {
+        ...state,
+        recordingStartedAt: -1,
+        recordingPeriods: recordingPeriods,
+        isRecording: false,
         isActive: false,
       }
 
