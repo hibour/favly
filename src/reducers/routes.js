@@ -13,16 +13,16 @@ module.exports = function reducer(state = initialState, action) {
             //console.log("BEFORE_ROUTE:", action);
             return state;
         case Actions.AFTER_ROUTE:
-            console.log("AFTER_ROUTE:", action);
+            //console.log("AFTER_ROUTE:", action);
             return state;
         case Actions.AFTER_POP:
-            console.log("AFTER_POP:", action);
+            //console.log("AFTER_POP:", action);
             return state;
         case Actions.BEFORE_POP:
             //console.log("BEFORE_POP:", action);
             return state;
         case Actions.AFTER_DISMISS:
-            console.log("AFTER_DISMISS:", action);
+            //console.log("AFTER_DISMISS:", action);
             return state;
         case Actions.BEFORE_DISMISS:
             //console.log("BEFORE_DISMISS:", action);

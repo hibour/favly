@@ -6,11 +6,12 @@ var {AppRegistry, Navigator, StyleSheet, Text, View, Component} = React;
 var RNRF = require('react-native-router-flux');
 var {Route, Schema, Animations} = RNRF;
 
-var Register = require('./pages/Register');
-var Login = require('./pages/Login');
-var Home = require('./pages/Home');
-var SongDetails = require('./pages/SongDetails');
-var RecordingDetails = require('./pages/RecordingDetails');
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Home from './pages/Home';
+import SongDetails from './pages/SongDetails';
+import RecordingDetails from './pages/RecordingDetails';
+import {styles as CommonStyles} from './css/common.js';
 
 import codePush from "react-native-code-push";
 import { Provider, connect } from 'react-redux'
@@ -35,9 +36,21 @@ class App extends Component {
                     <Route name="login" component={Login} title="Login" titleStyle={styles.title}/>
                     <Route name="register" component={Register} title="Register" schema="withoutAnimation"/>
 
-                    <Route name="songdetails" component={SongDetails} />
-                    <Route name="recordingdetails" component={RecordingDetails} />
-                    <Route name="home" initial={true} component={Home} wrapRouter={true} title="Kuhu"/>
+                    <Route name="songdetails" component={SongDetails}
+                    navigationBarStyle={CommonStyles.navigationBarStyle}
+                    titleStyle={CommonStyles.navigationBarTitleStyle}                    
+                    />
+                    <Route name="recordingdetails" component={RecordingDetails}
+                    navigationBarStyle={CommonStyles.navigationBarStyle}
+                    titleStyle={CommonStyles.navigationBarTitleStyle}
+                    />
+                    <Route name="home"
+                      initial={true}
+                      component={Home}
+                      title="Kuhu"
+                      navigationBarStyle={CommonStyles.navigationBarStyle}
+                      titleStyle={CommonStyles.navigationBarTitleStyle}
+                      />
                 </Router>
             </Provider>
         );

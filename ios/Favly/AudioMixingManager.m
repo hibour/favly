@@ -47,13 +47,18 @@ RCT_EXPORT_MODULE();
       return nil;
     }
   } else {
+    CMTime atTime = kCMTimeZero;
     for (NSDictionary *duration in durations) {
-      CMTime start = CMTimeMake(duration[@"start"], 1000);
-      CMTime end = CMTimeMake(duration[@"end"], 1000);
-      [audioTrack insertTimeRange:CMTimeRangeMake(start, end)
+      NSNumber *startInt = (NSNumber *)duration[@"start"];
+      NSNumber *endInt = (NSNumber *)duration[@"end"];
+      CMTimeRange range = CMTimeRangeMake(CMTimeMake([startInt longLongValue], 1000),
+                                          CMTimeMake([endInt longLongValue], 1000));
+      
+      [audioTrack insertTimeRange:range
                           ofTrack:sourceTrack
-                           atTime:start
+                           atTime:atTime
                             error:&error];
+      atTime = CMTimeAdd(atTime, range.duration);
       if (error) {
         return nil;
       }
@@ -70,7 +75,7 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
                   withAudio:(NSString *)vocal
-                  withPeriods:(NSArray *)periods
+                  withDurations:(NSArray *)durations
                   withDestination:(NSString *)destination
                   withCallback:(RCTResponseSenderBlock)callback)
 {
@@ -89,7 +94,7 @@ createCompositionTrackFor:vocal
   [self composition:composition
 createCompositionTrackFor:audio
  withAudioMixParams:audioMixParams
-      withDurations:periods
+      withDurations:durations
          withVolume:0.2
         withTrackId:2];
   

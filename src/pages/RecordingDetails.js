@@ -32,7 +32,7 @@ class RecordingDetails extends Component {
   }
 
   componentWillUnmount() {
-    this.props.stopRecording();
+    this.props.stopRecordingPlayback();
   }
 
   render() {
@@ -48,7 +48,7 @@ class RecordingDetails extends Component {
               <RecordingPlayer/>
               <View style={styles.recordingFileControls}>
                 <Icon.Button name="share"
-                  style={CommonStyles.actionButton}
+                  style={CommonStyles.actionButton2}
                   onPress={this.share.bind(this)}>
                   <Text style={CommonStyles.actionText}>Share</Text>
                 </Icon.Button>

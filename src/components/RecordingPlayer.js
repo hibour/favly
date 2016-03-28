@@ -12,12 +12,12 @@ var {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-const RecordingPlayerActions = require('../actions/recordingplayer')
-import TimerMixin from 'react-timer-mixin';
-
-const Icon = require('react-native-vector-icons/Ionicons');
-const CommonStyle = require('../css/common.js')
-const moment = require('moment');
+import ProgressBar from './ProgressBar'
+import RecordingPlayerActions from '../actions/recordingplayer'
+import Icon from 'react-native-vector-icons/Ionicons'
+import {styles as CommonStyles, constants as CommonConstants} from '../css/common.js'
+import PlayerStyles from '../css/player.js'
+import moment from 'moment';
 
 class RecordingPlayer extends Component {
 
@@ -26,36 +26,25 @@ class RecordingPlayer extends Component {
   }
 
   _renderPlayerControls(recording) {
-    return (<View style={styles.header}>
-              <View style={styles.songDetails}>
-                <View style={styles.songLeftDetails}>
-                  <Text style={styles.trackTitle}>{recording.title}</Text>
-                  <Text style={styles.timers}>{this._getSoundTimer()}</Text>
+    return (<View style={PlayerStyles.header}>
+              <View style={PlayerStyles.songDetails}>
+                <View style={PlayerStyles.songLeftDetails}>
+                  <Text style={PlayerStyles.trackTitle}>{recording.title}</Text>
+                  <Text style={PlayerStyles.timers}>{this._getSoundTimer()}</Text>
                 </View>
-                <View style={styles.songRightDetails}>
-                  <Text style={styles.recordedTime}>{moment(recording.time).toNow(true)}</Text>
-                  <Text style={styles.trackAlbum}>{recording.album}</Text>
+                <View style={PlayerStyles.songRightDetails}>
+                  <Text style={PlayerStyles.recordedTime}>{moment(recording.time).toNow(true)}</Text>
+                  <Text style={PlayerStyles.trackAlbum}>{recording.album}</Text>
                 </View>
               </View>
-
-              <View style={styles.playerControls}>
-                {/* play / pause */}
-                {!this.props.isPlaying ?
-                  <TouchableOpacity onPress={this.play.bind(this)} style={styles.button}>
-                    <Icon name={'play'} size={60} style={[styles.icon, styles.playIcon]}/>
-                  </TouchableOpacity> :
-                  <TouchableOpacity onPress={this.pause.bind(this)} style={styles.button}>
-                    <Icon name={'pause'} size={60} style={[styles.icon, styles.pauseIcon]}/>
-                  </TouchableOpacity>
-                }
-              </View>
+              {this.props.isActive ? this.playingControls() : this.initialPlayControls()}
             </View>);
   }
 
   _renderEmpty() {
-    return (<View style={styles.header}>
-              <View style={styles.recordingDetails}>
-                <Text style={styles.trackTitle}>{'Select a Recording to Play'}</Text>
+    return (<View style={PlayerStyles.header}>
+              <View style={PlayerStyles.recordingDetails}>
+                <Text style={PlayerStyles.trackTitle}>{'Select a Recording to Play'}</Text>
               </View>
             </View>);
   }
@@ -66,6 +55,35 @@ class RecordingPlayer extends Component {
     } else {
       return (this._renderEmpty());
     }
+  }
+
+  initialPlayControls() {
+    return (<Icon.Button name="play"
+    style={CommonStyles.actionButton}
+    onPress={this.play.bind(this)}>
+    <Text style={CommonStyles.actionText}>Play</Text>
+    </Icon.Button>);
+  }
+
+  playingControls() {
+    return (
+    <View style={PlayerStyles.miniPlayer}>
+      <View style={PlayerStyles.playerControls}>
+        {/* record start / pause */}
+        {!this.props.isPlaying ?
+          <TouchableOpacity onPress={this.play.bind(this)} style={PlayerStyles.button}>
+            <Icon name={'play'} size={60} style={[styles.playIcon]}/>
+          </TouchableOpacity> :
+          <TouchableOpacity onPress={this.pause.bind(this)} style={PlayerStyles.button}>
+            <Icon name={'pause'} size={60} style={[styles.playIcon]}/>
+          </TouchableOpacity>
+        }
+      </View>
+      <ProgressBar fillStyle={PlayerStyles.progressBarFill}
+        backgroundStyle={PlayerStyles.progressBarBackground}
+        style={PlayerStyles.progressBar}
+        progress={this.props.currentTime * 1.0 / this.props.currentDuration} />
+    </View>);
   }
 
   play() {
@@ -83,6 +101,7 @@ class RecordingPlayer extends Component {
 
 function mapStateToProps(state) {
   return {
+    isActive: state.recordingplayer.isActive,
     isPlaying: state.recordingplayer.isPlaying,
     currentTime: state.recordingplayer.currentTime,
     currentDuration: state.recordingplayer.currentDuration,
@@ -95,57 +114,7 @@ function mapDispatchToProps(dispatch) {
 module.exports = connect(mapStateToProps, mapDispatchToProps)(RecordingPlayer)
 
 const styles = StyleSheet.create({
-  header: {
-    alignItems: 'center',
-    flexDirection: 'column',
-    flex: 1,
-  },
-
-  songDetails: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  songLeftDetails: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
-  songRightDetails: {
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-  },
-  trackTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  timers: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  recordedTime: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  trackAlbum: {
-    fontSize: 12,
-    color: 'black',
-  },
-
-
-  playerControls: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  button: {
-    margin: 4,
-  },
-
-  icon: {
-    color: 'black',
+  playIcon: {
+    color: CommonConstants.primaryColor,
   },
 });

@@ -23,6 +23,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import SongPlayer from '../components/SongPlayer';
 import Lyrics from '../components/Lyrics';
+import HomeActions from '../actions/home'
 import SongsActions from '../actions/songs'
 import SongPlayerActions from '../actions/songplayer'
 
@@ -112,6 +113,18 @@ class SongDetails extends Component {
       <Lyrics lyrics={song.lyricData} />
     </View>);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    var songId = prevProps.song.id;
+    var prevRecordings = prevProps.songRecordings[songId] || [];
+    var currentRecordings = this.props.songRecordings[songId] || [];
+    console.log(">>> song recordings ", songId, prevRecordings.length, currentRecordings.length);
+    if (currentRecordings.length > prevRecordings.length) {
+      // go to home and recordings page.
+      Actions.pop();
+      this.props.changeTab(1);
+    }
+  }
 }
 
 function mapStateToProps(state) {
@@ -121,7 +134,7 @@ function mapStateToProps(state) {
   }
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(Object.assign({}, SongPlayerActions, SongsActions), dispatch);
+  return bindActionCreators(Object.assign({}, SongPlayerActions, SongsActions, HomeActions), dispatch);
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SongDetails)
 

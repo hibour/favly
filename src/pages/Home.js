@@ -8,10 +8,7 @@ import React, {
   Dimensions,
 } from 'react-native';
 
-var {
-  height: deviceHeight
-} = Dimensions.get('window');
-
+import { connect } from 'react-redux'
 import FavlyTabBar from '../components/FavlyTabBar';
 import SongListWrapper from '../components/SongListWrapper';
 import RecordingListWrapper from '../components/RecordingListWrapper';
@@ -33,7 +30,8 @@ class Home extends Component {
   render() {
     return (<View style={[CommonStyles.container, styles.container]}>
       <ScrollableTabView
-        initialPage={0}
+        ref="tabview"
+        initialPage={this.props.currentTab}
         tabBarPosition="bottom"
         renderTabBar={() => <FavlyTabBar />}>
 
@@ -54,9 +52,23 @@ class Home extends Component {
       </ScrollableTabView>
     </View>);
   }
-};
 
-module.exports = Home;
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.currentTab != nextProps.currentTab;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    //this.refs.tabView.goToPage(this.props.currentTab);
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    currentTab: state.home.currentTab,
+  }
+}
+module.exports = connect(mapStateToProps)(Home)
+
 const styles = StyleSheet.create({
   container: {
     marginTop: 60,

@@ -8,6 +8,7 @@ const {
 } = require('../actions/recordingplayer')
 
 const initialState = {
+  isActive: false,
   isPlaying: false,
   currentRecording: null,
   currentTime: 0,
@@ -18,10 +19,8 @@ const recordingplayer = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_RECORDING:
       return {
-        ...state,
+        ...initialState,
         currentRecording: action.recording,
-        currentTime: 0,
-        currentDuration: 0,
       }
 
     case REFRESH_RECORDING:
@@ -33,6 +32,7 @@ const recordingplayer = (state = initialState, action) => {
     case START_RECORDING_PLAYBACK:
       return {
         ...state,
+        isActive: true,
         isPlaying: true,
       }
 
@@ -46,6 +46,7 @@ const recordingplayer = (state = initialState, action) => {
       return {
         ...state,
         currentTime: 0,
+        isActive: false,
         isPlaying: false,
       }
 

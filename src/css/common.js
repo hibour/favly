@@ -11,6 +11,13 @@ const constants = {
 };
 
 const styles = StyleSheet.create({
+  navigationBarStyle: {
+    backgroundColor: constants.primaryColor,
+  },
+  navigationBarTitleStyle: {
+    color: constants.secondaryColor,
+  },
+
   container: {
     flex: 1,
     backgroundColor: constants.primaryBackground,

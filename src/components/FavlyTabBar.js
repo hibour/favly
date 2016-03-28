@@ -68,7 +68,7 @@ class FavlyTabBar extends Component {
       position: 'absolute',
       width: containerWidth / numberOfTabs,
       height: 3,
-      backgroundColor: '#3b5998',
+      backgroundColor: CommonStyle.constants.primaryColor,
       bottom: 0,
     };
 
@@ -78,7 +78,7 @@ class FavlyTabBar extends Component {
 
     return (
       <View>
-        <View style={[styles.tabs, this.props.style, ]}>
+        <View style={[styles.tabs, this.props.style]}>
           {this.props.tabs.map((tab, i) => this.renderTabOption(tab, i))}
         </View>
         <Animated.View style={[tabUnderlineStyle, {left}]} />

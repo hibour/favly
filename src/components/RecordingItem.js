@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: 84,
-    height: 84,
+    height: 64,
     borderRadius: 4,
   },
 

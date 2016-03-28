@@ -19,18 +19,34 @@ exports.changeRecording = function(recording) {
 exports.startRecordingPlayback = function() {
   return (dispatch, getState) => {
     var recordingplayer = getState().recordingplayer;
+
+    if (recordingplayer.isActive && recordingplayer.isPlaying) {
+      return;
+    }
+
+    AudioPlayer.onProgress = (data) => {
+      dispatch({
+        type: actions.SET_RECORDING_CURRENT_TIME,
+        duration: data.currentDuration * 1000,
+        time: data.currentTime * 1000
+      })
+    }
+
+    if (recordingplayer.isActive) {
+      AudioPlayer.unpause();
+      dispatch({
+        type: actions.START_RECORDING_PLAYBACK
+      });
+      return;
+    }
+
     var recording = recordingplayer.currentRecording;
     if (recording) {
       AudioPlayer.play(recording.path, {sessionCategory: 'Playback'});
-      AudioPlayer.onProgress = (data) => {
-        dispatch({
-          type: actions.SET_RECORDING_CURRENT_TIME,
-          duration: data.currentDuration * 1000,
-          time: data.currentTime * 1000
-        })
-      };
       AudioPlayer.onFinished = (data) => {
-        actions.pauseRecordingPlayback();
+        dispatch({
+          type: actions.STOP_RECORDING_PLAYBACK
+        })
       };
       AudioPlayer.setProgressSubscription();
       AudioPlayer.setFinishedSubscription();
@@ -38,13 +54,14 @@ exports.startRecordingPlayback = function() {
         type: actions.START_RECORDING_PLAYBACK
       });
     }
-  };
+  }
 }
 
 exports.pauseRecordingPlayback = function() {
   return (dispatch, getState) => {
     var recordingplayer = getState().recordingplayer;
-    if (recordingplayer.isPlaying) {
+    if (recordingplayer.isActive) {
+      AudioPlayer.onProgress = null;
       AudioPlayer.pause();
       dispatch({
         type: actions.PAUSE_RECORDING_PLAYBACK
@@ -56,7 +73,7 @@ exports.pauseRecordingPlayback = function() {
 exports.stopRecordingPlayback = function() {
   return (dispatch, getState) => {
     var recordingplayer = getState().recordingplayer;
-    if (recordingplayer.isPlaying) {
+    if (recordingplayer.isActive) {
       AudioPlayer.stop();
       dispatch({
         type: actions.STOP_RECORDING_PLAYBACK

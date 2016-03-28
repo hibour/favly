@@ -18,15 +18,16 @@ const comparator = function(recording1, recording2) {
 
 const addRecording = (recordings, mapping, recording) => {
   recordings[recording.id] = recording;
-  if (!mapping[recording.songid]) {
-    mapping[recording.songid] = [];
-  }
-  mapping[recording.songid].push(recording);
+  var songToRecordingMapping = Object.assign([], mapping[recording.songid]);
+  songToRecordingMapping.push(recording);
+  mapping[recording.songid] = songToRecordingMapping;
 }
+
 const getRecordingListFromMap = (recordings) => {
   var recordingList = Object.keys(recordings).map((key) => {return recordings[key]});
   return recordingList.sort(comparator);
 }
+
 const removeElementFromList = (list, element) => {
   var i = list.indexOf(element);
   if(i != -1) {
