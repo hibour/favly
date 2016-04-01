@@ -112,10 +112,26 @@ var AudioMixer = {
   mixAudio: function(path1, path2, periods, path3, callback) {
     // Mixing
     // atrim=start=0.25
+
+    var command = '';
+    var concatCommand = ''
+    if (periods.length > 1) {
+      periods.forEach(function(period, index) {
+        var track = "[aa" + index + "]";
+        command += "[0:a]atrim=start=" + period.start/1000 + ":end=" + period.end/1000 + track + ";"
+        concatCommand += track
+      })
+      concatCommand += "concat[outa];"
+    } else {
+      var period = periods[0];
+      command = "[0:a]atrim=start=" + period.start/1000 + ":end=" + period.end/1000 + "[outa];"
+    }
+
     AudioMixingModule.mixAudio(" -i " + path1 + " -i " + path2 +
     " -filter_complex " +
-    "[0:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=0.25[a1];" +
-    "[1:a]atempo=1.005,aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=1.0,atrim=start=0.5[a2];" +
+    command + concatCommand +
+    "[outa]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=0.25[a1];" +
+    "[1:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=1.0[a2];" +
     "[a1][a2]amerge,pan=stereo:c0<c0+c2:c1<c1+c3[out] " +
     "-map [out] -c:a pcm_s16le -shortest ",
     path3, callback);

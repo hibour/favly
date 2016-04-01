@@ -66,6 +66,8 @@ var AudioPlayer = {
     this.progressSubscription = DeviceEventEmitter.addListener('playerProgress',
       (data) => {
         if (this.onProgress) {
+          data.currentDuration = data.currentDuration * 1000;
+          data.currentTime = data.currentTime * 1000;
           this.onProgress(data);
         }
       }
@@ -83,12 +85,12 @@ var AudioPlayer = {
   },
   getDuration: function(callback) {
     AudioPlayerManager.getDuration((error, duration) => {
-      callback(duration);
+      callback(duration * 1000);
     })
   },
   getCurrentTime: function(callback) {
     AudioPlayerManager.getCurrentTime((error, currentTime) => {
-      callback(currentTime);
+      callback(currentTime * 1000);
     })
   },
   onStart: null,

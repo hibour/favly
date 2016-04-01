@@ -162,12 +162,12 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
                 case UPDATE_PROGRESS:
                     if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
                         WritableMap values = Arguments.createMap();
-                        values.putInt("currentDuration", mMediaPlayer.getDuration() / 1000);
-                        values.putInt("currentTime", mMediaPlayer.getCurrentPosition() / 1000);
+                        values.putInt("currentDuration", mMediaPlayer.getDuration());
+                        values.putInt("currentTime", mMediaPlayer.getCurrentPosition());
                         sendEvent(getReactApplicationContext(), PLAYER_PROGRESS, values);
 
                         msg = obtainMessage(UPDATE_PROGRESS);
-                        sendMessageDelayed(msg, 200);
+                        sendMessageDelayed(msg, 100);
                     }
                     break;
             }

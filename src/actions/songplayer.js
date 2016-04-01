@@ -43,8 +43,8 @@ exports.playSong = function() {
     AudioPlayer.onProgress = (data) => {
       dispatch({
         type: actions.SET_CURRENT_TIME,
-        duration: data.currentDuration * 1000,
-        time: data.currentTime * 1000
+        duration: data.currentDuration,
+        time: data.currentTime
       })
     }
     AudioPlayer.setProgressSubscription();
@@ -88,7 +88,7 @@ function _startRecording(dispatch, getState) {
     AudioPlayer.getCurrentTime((time) => {
       dispatch({
         type: actions.START_RECORDING,
-        time: time * 1000,
+        time: time,
       })
     })
   }
@@ -108,7 +108,7 @@ exports.pauseRecording = function() {
       AudioPlayer.getCurrentTime((time) => {
         dispatch({
           type: actions.PAUSE_RECORDING,
-          time: time * 1000,
+          time: time,
         })
       })
     }
@@ -121,7 +121,7 @@ var _stopRecording = function(dispatch, getState) {
     AudioPlayer.getCurrentTime((time) => {
       dispatch({
         type: actions.STOP_RECORDING,
-        time: time * 1000,
+        time: time,
       })
       var song = songplayer.currentSong;
       var path = Constants.getFinalRecordPath(song, new Date());
