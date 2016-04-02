@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     color: CommonConstants.primaryColor,
     textShadowColor: 'black',
     textShadowRadius: 1,
-    textShadowOffset: {height: 1, width: 0}    
+    textShadowOffset: {height: 1, width: 0}
   },
 
 

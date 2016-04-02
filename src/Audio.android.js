@@ -74,6 +74,14 @@ var AudioPlayer = {
 var AudioRecorder = {
   prepareRecordingAtPath: function(path, options) {
     AudioRecorderModule.prepare(path);
+    if (this.startSubscription) this.startSubscription.remove();
+    this.startSubscription = NativeAppEventEmitter.addListener('recordingStarted',
+      (data) => {
+        if (this.onStart) {
+          this.onStart(data);
+        }
+      }
+    );
     if (this.progressSubscription) this.progressSubscription.remove();
     this.progressSubscription = NativeAppEventEmitter.addListener('recordingProgress',
       (data) => {
@@ -130,11 +138,10 @@ var AudioMixer = {
     AudioMixingModule.mixAudio(" -i " + path1 + " -i " + path2 +
     " -filter_complex " +
     command + concatCommand +
-    "[outa]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=0.25[a1];" +
+    "[outa]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=0.2[a1];" +
     "[1:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=1.0[a2];" +
     "[a1][a2]amerge,pan=stereo:c0<c0+c2:c1<c1+c3[out] " +
-    "-map [out] -c:a pcm_s16le -shortest ",
-    path3, callback);
+    "-map [out] -c:a pcm_s16le", path3, callback);
     // Smoothing
     // AudioMixingModule.mixAudio(" -i " + path2 +
     // " -af highpass=f=200,lowpass=f=3000 -c:a pcm_s16le -shortest ", path3, callback);

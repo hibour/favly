@@ -84,13 +84,15 @@ exports.stopSong = function() {
 function _startRecording(dispatch, getState) {
   var songplayer = getState().songplayer;
   if (!songplayer.isRecording && songplayer.isPlaying) {
-    AudioRecorder.startRecording();
-    AudioPlayer.getCurrentTime((time) => {
-      dispatch({
-        type: actions.START_RECORDING,
-        time: time,
+    AudioRecorder.onStart = (data) => {
+      AudioPlayer.getCurrentTime((time) => {
+        dispatch({
+          type: actions.START_RECORDING,
+          time: time,
+        })
       })
-    })
+    }
+    AudioRecorder.startRecording();
   }
 }
 

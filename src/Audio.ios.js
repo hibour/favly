@@ -144,6 +144,9 @@ var AudioRecorder = {
   },
   startRecording: function() {
     AudioRecorderManager.startRecording();
+    if (this.onStart) {
+      this.onStart(null);
+    }
   },
   pauseRecording: function() {
     AudioRecorderManager.pauseRecording();

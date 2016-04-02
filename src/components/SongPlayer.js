@@ -88,7 +88,9 @@ class SongPlayer extends Component {
   }
 
   play() {
-    this.props.playSong();
+    if (this.props.onStart) {
+      this.props.onStart();
+    }
   }
 
   stop() {

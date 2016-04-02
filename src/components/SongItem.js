@@ -9,7 +9,9 @@ var {
   Component,
 } = React;
 
-import {styles as CommonStyles} from '../css/common.js';
+import {styles as CommonStyles} from '../css/common';
+import Title from './text/Title';
+import Subtitle from './text/Subtitle';
 
 class SongItem extends Component {
 
@@ -24,10 +26,10 @@ class SongItem extends Component {
         <View style={[CommonStyles.listItem]}>
           <Image source={{uri: song.thumbnail}} style={styles.thumbnail}/>
           <View style={styles.rightContainer}>
-            <Text style={[CommonStyles.titleText, styles.title]}>{song.title}</Text>
+            <Title style={styles.title}>{song.title}</Title>
             <View style={styles.subDetails}>
-              <Text style={[CommonStyles.subtitleText, styles.album]}>{song.album}</Text>
-              <Text style={[CommonStyles.subtitleText, styles.year]}>{song.year}</Text>
+              <Subtitle style={styles.album}>{song.album}</Subtitle>
+              <Subtitle style={styles.year}>{song.year}</Subtitle>
             </View>
           </View>
         </View>

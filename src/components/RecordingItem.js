@@ -12,6 +12,9 @@ var {
 import {styles as CommonStyles} from '../css/common.js'
 import moment from 'moment';
 
+import Title from './text/Title';
+import Subtitle from './text/Subtitle';
+
 class RecordingItem extends Component {
 
   constructor(props) {
@@ -25,8 +28,8 @@ class RecordingItem extends Component {
         <View style={[CommonStyles.listItem]}>
           <Image source={{uri: recording.thumbnail}} style={styles.thumbnail}/>
           <View style={styles.rightContainer}>
-            <Text style={[CommonStyles.titleText, styles.title]}>{recording.title}</Text>
-            <Text style={[CommonStyles.subtitleText, styles.date]}>{moment(recording.time).toNow(true)}</Text>
+            <Title style={styles.title}>{recording.title}</Title>
+            <Subtitle style={styles.date}>{moment(recording.time).toNow(true)}</Subtitle>
           </View>
         </View>
       </TouchableHighlight>

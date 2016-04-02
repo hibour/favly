@@ -12,7 +12,7 @@ var {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import SongPlayerActions from '../actions/songplayer'
-import {constants as CommonConstants} from '../css/common.js';
+import {constants as CommonConstants} from '../css/common';
 
 var LineHeight = 46;
 

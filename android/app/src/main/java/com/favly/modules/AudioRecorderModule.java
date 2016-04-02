@@ -24,6 +24,7 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = "AudioRecorderModule";
 
+    private static final String RECORDING_STARTED = "recordingStarted";
     private static final String RECORDING_FINISHED = "recordingFinished";
     private static final String RECORDING_PROGRESS = "recordingProgress";
 
@@ -71,6 +72,8 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
             @Override
             public void onStarted() {
                 Log.d(TAG, "Audio recording actually started at" + System.currentTimeMillis());
+                // Recording started.
+                sendEvent(getReactApplicationContext(), RECORDING_STARTED, Arguments.createMap());
             }
 
             @Override

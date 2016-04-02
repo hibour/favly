@@ -17,12 +17,14 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons'
 
-import LinearGradient from 'react-native-linear-gradient';
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
-import SongPlayer from '../components/SongPlayer';
-import Lyrics from '../components/Lyrics';
+import LinearGradient from 'react-native-linear-gradient'
+import ParallaxScrollView from 'react-native-parallax-scroll-view'
+import SongPlayer from '../components/SongPlayer'
+import Lyrics from '../components/Lyrics'
+import CountDownTimer from '../components/CountDownTimer'
+
 import HomeActions from '../actions/home'
 import SongsActions from '../actions/songs'
 import SongPlayerActions from '../actions/songplayer'
@@ -50,7 +52,9 @@ class SongDetails extends Component {
     var song = this.props.song;
     var body = this.renderDownloadState(song);
 
-    return (<ParallaxScrollView
+    return (
+      <View style={styles.container}>
+      <ParallaxScrollView
           ref="ParallaxView"
           headerBackgroundColor="#FFFFFF"
           contentBackgroundColor="#FFFFFF"
@@ -58,6 +62,7 @@ class SongDetails extends Component {
           stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
           parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
           backgroundSpeed={10}
+          style={styles.parallaxView}
 
           renderBackground={() => (
             <View key="background">
@@ -68,14 +73,14 @@ class SongDetails extends Component {
           renderForeground={() => (
             <View key="parallax-header" style={ styles.parallaxHeader }>
               <LinearGradient key="background" colors={['#00000000', '#000000ff']} style={styles.linearGradient}>
-                <SongPlayer style={styles.player}/>
+                <SongPlayer style={styles.player}  onStart={this.onStart.bind(this)}/>
               </LinearGradient>
             </View>
           )}
 
           renderStickyHeader={() => (
             <View key="sticky-header" style={ styles.stickySection }>
-              <SongPlayer style={styles.player}/>
+              <SongPlayer style={styles.player} onStart={this.onStart.bind(this)}/>
             </View>
           )}
 
@@ -88,30 +93,23 @@ class SongDetails extends Component {
             </View>
           )}>
           {body}
-    </ParallaxScrollView>);
+    </ParallaxScrollView>
+    <CountDownTimer ref="timer" onFinish={this.onCountdownFinish.bind(this)}
+      initialValue={3} style={styles.countDownTimer}/>
+    </View>
+  );
   }
 
   renderDownloadState(song) {
-    return (
-      <View style={styles.container}>
-        {song.isLoaded ? this.renderLyricView(song) : this.renderDownloadingView(song)}
-      </View>
-    );
+    return (song.isLoaded ? this.renderLyricView(song) : this.renderDownloadingView(song));
   }
 
   renderDownloadingView(song) {
-    return (
-      <View style={styles.container}>
-        <Text>{song.downloadProgress}% Loaded</Text>
-      </View>
-    );
+    return (<Text>{song.downloadProgress}% Loaded</Text>);
   }
 
   renderLyricView(song) {
-    return (
-    <View style={styles.container}>
-      <Lyrics lyrics={song.lyricData} />
-    </View>);
+    return (<Lyrics lyrics={song.lyricData} />);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -124,6 +122,17 @@ class SongDetails extends Component {
       Actions.pop();
       this.props.changeTab(1);
     }
+  }
+
+  onStart() {
+    // Show animatable count down timer.
+    if (this.refs.timer) {
+      this.refs.timer.start();
+    }
+  }
+
+  onCountdownFinish() {
+    this.props.playSong();
   }
 }
 
@@ -145,15 +154,21 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF'
   },
 
-  background: {
+  countDownTimer: {
     position: 'absolute',
-    top: 0,
     left: 0,
+    top: 0,
+    height: window.height,
     width: window.width,
-    height: PARALLAX_HEADER_HEIGHT
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+
+  parallaxView: {
+    height: window.height,
   },
 
   stickySection: {

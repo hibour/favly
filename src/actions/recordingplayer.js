@@ -27,8 +27,8 @@ exports.startRecordingPlayback = function() {
     AudioPlayer.onProgress = (data) => {
       dispatch({
         type: actions.SET_RECORDING_CURRENT_TIME,
-        duration: data.currentDuration * 1000,
-        time: data.currentTime * 1000
+        duration: data.currentDuration,
+        time: data.currentTime
       })
     }
 
