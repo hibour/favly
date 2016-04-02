@@ -9,9 +9,12 @@ import React, {
 } from 'react-native';
 
 import { connect } from 'react-redux'
+const Firebase = require('firebase');
+
 import FavlyTabBar from '../components/FavlyTabBar';
 import SongListWrapper from '../components/SongListWrapper';
 import RecordingListWrapper from '../components/RecordingListWrapper';
+import Settings from '../components/Settings';
 
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar, } from 'react-native-scrollable-tab-view';
 
@@ -19,7 +22,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Constants from '../utils/constants.js'
 import {styles as CommonStyles} from '../css/common.js';
 
-const Firebase = require('firebase');
+
 
 class Home extends Component {
   constructor(props) {
@@ -35,18 +38,16 @@ class Home extends Component {
         tabBarPosition="bottom"
         renderTabBar={() => <FavlyTabBar />}>
 
-        <ScrollView tabLabel="music-note" style={[CommonStyles.homeTabView]}>
+        <View tabLabel="music-note" style={[CommonStyles.homeTabView]}>
           <SongListWrapper></SongListWrapper>
-        </ScrollView>
+        </View>
 
-        <ScrollView tabLabel="ios-recording" style={[CommonStyles.homeTabView]}>
+        <View tabLabel="ios-recording" style={[CommonStyles.homeTabView]}>
           <RecordingListWrapper></RecordingListWrapper>
-        </ScrollView>
+        </View>
 
         <ScrollView tabLabel="more" style={[CommonStyles.homeTabView]}>
-          <View style={[CommonStyles.container]}>
-            <Text>Settings</Text>
-          </View>
+          <Settings style={[CommonStyles.container]}/>
         </ScrollView>
 
       </ScrollableTabView>

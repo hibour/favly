@@ -10,8 +10,10 @@ var {
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 import {styles as CommonStyles} from '../css/common.js'
 
+import RecordingPlayerActions from '../actions/recordingplayer'
 import RecordingsActions from '../actions/recordings'
 import RecordingPlayer from './RecordingPlayer';
 import RecordingList from './RecordingList';
@@ -43,8 +45,15 @@ class RecordingListWrapper extends Component {
 
   renderRecordings() {
     return (<View style={[CommonStyles.container, styles.container]}>
-        <RecordingList recordings={this.props.recordingList}/>
+        <RecordingList recordings={this.props.recordingList}
+          onRecordingSelected={this.onRecordingSelected.bind(this)}
+        />
       </View>);
+  }
+
+  onRecordingSelected(recording) {
+    this.props.changeRecording(recording);
+    Actions.recordingdetails();
   }
 }
 
@@ -54,7 +63,7 @@ function mapStateToProps(state) {
   }
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(RecordingsActions, dispatch)
+  return bindActionCreators(Object.assign({}, RecordingsActions, RecordingPlayerActions), dispatch)
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(RecordingListWrapper)
 

@@ -9,10 +9,13 @@ var {
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import {Actions} from 'react-native-router-flux'
+
 import {styles as CommonStyles} from '../css/common.js'
 
 import SongList from './SongList';
 import SongsActions from '../actions/songs'
+import SongPlayerActions from '../actions/songplayer'
 
 class SongListWrapper extends Component {
   constructor(props) {
@@ -42,9 +45,21 @@ class SongListWrapper extends Component {
   renderSongs() {
     return (
       <View style={[CommonStyles.container, styles.container]}>
-        <SongList songs={this.props.songList}/>
+        <SongList songs={this.props.songList}
+          onSongSelected={this.onSongSelected.bind(this)}
+          onSearch={this.onSearch.bind(this)}
+        />
       </View>
     );
+  }
+
+  onSearch(searchTerm) {
+    this.props.searchSongs(searchTerm)
+  }
+
+  onSongSelected(song) {
+    this.props.changeSong(song);
+    Actions.songdetails();
   }
 }
 
@@ -54,7 +69,7 @@ function mapStateToProps(state) {
   }
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(SongsActions, dispatch)
+  return bindActionCreators(Object.assign({}, SongsActions, SongPlayerActions), dispatch)
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SongListWrapper)
 

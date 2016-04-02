@@ -12,6 +12,10 @@ const {
   TOGGLE_MUTE,
   SET_CURRENT_TIME
 } = require('../actions/songplayer')
+
+const {
+  CHANGE_LOCALE,
+} = require('../actions/settings')
 var LRC = require('../utils/lrc')
 
 const initialState = {
@@ -31,14 +35,32 @@ const initialState = {
   recordingPeriods: [], // {start: 0, end: 0}
 }
 
+const getLyricPlayer = (lyricsData, preferredLocale) => {
+  if (!lyricsData) {
+    return null;
+  }
+
+  var lyrics = lyricsData[preferredLocale] || lyricsData['en'];
+  if (!lyrics) {
+    // if both preferred and english dont exist, return the first one.
+    for (var i in lyricsData) {
+      lyrics = lyricsData[i];
+      break;
+    }
+  }
+
+  var lrcPlayer = null;
+  if (lyrics) {
+    lrcPlayer = new LRC.Lrc(lyrics);
+  }
+  return lrcPlayer;
+}
+
 const songplayer = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_SONG:
-      var lrcPlayer = null;
       var song = action.song;
-      if (song.lyricsData) {
-        lrcPlayer = new LRC.Lrc(song.lyricsData);
-      }
+      var lrcPlayer = getLyricPlayer(song.lyricsData, action.locale);
       return {
         ...initialState,
         currentSong: song,
@@ -50,13 +72,19 @@ const songplayer = (state = initialState, action) => {
       if (state.currentSong.id != song.id) {
         return state;
       }
-      var lrcPlayer = state.currentLRCPlayer;
-      if (!lrcPlayer && song.lyricsData) {
-        lrcPlayer = new LRC.Lrc(song.lyricsData);
-      }
+      var song = action.song;
+      var lrcPlayer = getLyricPlayer(song.lyricsData, action.locale);
       return {
         ...state,
         currentSong: song,
+        currentLRCPlayer: lrcPlayer,
+      }
+
+    case CHANGE_LOCALE:
+      var song = state.currentSong;
+      var lrcPlayer = getLyricPlayer(song.lyricsData, action.locale);
+      return {
+        ...initialState,
         currentLRCPlayer: lrcPlayer,
       }
 

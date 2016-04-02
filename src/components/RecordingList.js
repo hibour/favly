@@ -10,10 +10,8 @@ var {
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 import {styles as CommonStyles} from '../css/common.js';
 
-import RecordingPlayerActions from '../actions/recordingplayer'
 import RecordingItem from './RecordingItem';
 
 class RecordingList extends Component {
@@ -48,8 +46,9 @@ class RecordingList extends Component {
 
   renderRecording(recording) {
     return (<RecordingItem recording={recording} onPress={() => {
-      this.props.changeRecording(recording);
-      Actions.recordingdetails();
+      if (this.props.onRecordingSelected) {
+        this.props.onRecordingSelected(recording);
+      }
     }}/>);
   }
 
@@ -62,14 +61,7 @@ class RecordingList extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-  }
-}
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(RecordingPlayerActions, dispatch)
-}
-module.exports = connect(mapStateToProps, mapDispatchToProps)(RecordingList)
+module.exports = RecordingList
 
 const styles = StyleSheet.create({
   listView: {

@@ -1,6 +1,7 @@
 const {
   OFFLINE_SONGS_LOADED,
   ONLINE_SONGS_LOADED,
+  SEARCH_SONGS,
 
   DOWNLOADING_SONG_ASSETS,
   UPDATE_DOWNLOAD_PROGRESS,
@@ -23,7 +24,6 @@ const songInitialState = {
   version: 0,
 
   lyricsData: null,
-  lrcPlayer: null,
 
   isLoaded: false,
   isDownloading: false,
@@ -128,6 +128,12 @@ function songs(state = initialState, action) {
       });
       var songList = Object.keys(songs).map((key) => {return songs[key]});
 
+      return {
+        ...state,
+        songs: songs,
+        songList: songList
+      }
+    case SEARCH_SONGS:
       return {
         ...state,
         songs: songs,

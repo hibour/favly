@@ -43,6 +43,8 @@ class Lyrics extends Component {
         <ListView ref="listView" style={styles.container} dataSource={this.dataSource}
         renderRow={this._renderRow.bind(this)}/>
       );
+    } else {
+      return (<View></View>)
     }
   }
 

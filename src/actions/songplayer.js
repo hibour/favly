@@ -20,9 +20,13 @@ exports.TOGGLE_MUTE = 'TOGGLE_MUTE'
 exports.SET_CURRENT_TIME = 'SET_CURRENT_TIME'
 
 exports.changeSong = function(song) {
-  return {
-    type: actions.CHANGE_SONG,
-    song: song
+  return (dispatch, getState) => {
+    var settings = getState().settings;
+    dispatch({
+      type: actions.CHANGE_SONG,
+      song: song,
+      locale: settings.locale,
+    })
   }
 }
 
