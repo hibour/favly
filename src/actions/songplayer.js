@@ -89,6 +89,7 @@ function _startRecording(dispatch, getState) {
   var songplayer = getState().songplayer;
   if (!songplayer.isRecording && songplayer.isPlaying) {
     AudioRecorder.onStart = (data) => {
+      console.log(">> Audio recording started >>>");
       AudioPlayer.getCurrentTime((time) => {
         dispatch({
           type: actions.START_RECORDING,
@@ -124,20 +125,20 @@ exports.pauseRecording = function() {
 var _stopRecording = function(dispatch, getState) {
   var songplayer = getState().songplayer;
   if (songplayer.isRecording) {
-    AudioPlayer.getCurrentTime((time) => {
-      dispatch({
-        type: actions.STOP_RECORDING,
-        time: time,
-      })
-      var song = songplayer.currentSong;
-      var path = Constants.getFinalRecordPath(song, new Date());
-      AudioRecorder.onFinished = function(data) {
-        if (data.status != 'OK') {
-          console.log(">>> Recording failed ", data);
-          // TODO handle this failure.
-          return;
-        }
+    AudioRecorder.onFinished = function(data) {
+      if (data.status != 'OK') {
+        console.log(">>> Recording failed ", data);
+        // TODO handle this failure.
+        return;
+      }
+      AudioPlayer.getCurrentTime((time) => {
+        dispatch({
+          type: actions.STOP_RECORDING,
+          time: time,
+        })
         songplayer = getState().songplayer;
+        var song = songplayer.currentSong;
+        var path = Constants.getFinalRecordPath(song, new Date());
         AudioMixer.mixAudio(Constants.getSongPath(song),
           data.audioFileURL,
           songplayer.recordingPeriods,
@@ -160,10 +161,10 @@ var _stopRecording = function(dispatch, getState) {
               console.log(">>> Failed :( ", error, success);
               //TODO Show error to the user.
             }
-          })
-      }
-      AudioRecorder.stopRecording();
-    })
+          })        
+      })
+    }
+    AudioRecorder.stopRecording();
   }
 }
 

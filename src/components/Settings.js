@@ -18,6 +18,10 @@ class Settings extends Component {
     super(props);
   }
 
+  componentDidMount() {
+    this.props.loadOfflineSettings();
+  }
+
   render() {
     return (
       <View style={this.props.style}>
@@ -60,6 +64,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#bbbbbb',
   },
   control: {
-    height: 10,
+    height: 30,
   }
 });

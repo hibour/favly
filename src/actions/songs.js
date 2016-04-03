@@ -56,7 +56,7 @@ function dispatchSongUpdates(dispatch, action, refreshCurrentSong, getState) {
   if (refreshCurrentSong) {
     var state = getState();
     var song = state.songs.songs[action.id];
-    var locale = state.locale;
+    var locale = state.settings.locale;
     dispatch({type: SongPlayerActions.REFRESH_SONG, song: song, locale: locale});
   }
 }

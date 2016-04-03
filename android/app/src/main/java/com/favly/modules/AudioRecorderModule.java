@@ -78,7 +78,6 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onException(Exception e) {
-
             }
         });
     }
