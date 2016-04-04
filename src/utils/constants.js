@@ -10,13 +10,13 @@ var Constants = {
   PRODCDNURL: 'https://kuhu-1270.appspot.com',
 
   getRestUrl: function(path) {
-    if (isProduction) {
+    if (this.isProduction) {
       return this.PRODBASEURL + path;
     }
     return this.BASEURL + path;
   },
   getCDNUrl: function(path) {
-    if (isProduction) {
+    if (this.isProduction) {
       return this.PRODCDNURL + path;
     }
     return this.CDNURL + path;

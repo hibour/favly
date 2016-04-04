@@ -12,6 +12,7 @@ var {
 import {styles as CommonStyles} from '../css/common.js'
 import moment from 'moment';
 
+import Constants from '../utils/constants'
 import Title from './text/Title';
 import Subtitle from './text/Subtitle';
 

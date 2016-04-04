@@ -32,9 +32,9 @@ def import_tasks():
             jsonSong['thumbnail'] = jsonSong['thumbnail'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore');
             jsonSong['track'] = jsonSong['track'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore');
 
-            id = jsonSong['album'] + '~' + jsonSong['title']
-            id = id.encode('ascii', 'ignore')
-            id.translate(None, string.punctuation)
+            album = jsonSong['album'].encode('ascii', 'ignore').translate(None, string.whitespace).translate(None, string.punctuation).lower()
+            title = jsonSong['title'].encode('ascii', 'ignore').translate(None, string.whitespace).translate(None, string.punctuation).lower()
+            id = album + '~' + title
 
             song = Song(id=id,title=jsonSong['title'],album=jsonSong['album'],track=jsonSong['track'],lyrics=jsonSong['lyrics'],version=int(jsonSong['version']),year=int(jsonSong['year']),thumbnail=jsonSong['thumbnail'])
             song.put()
