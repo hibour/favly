@@ -12,6 +12,8 @@ class Song(BaseModel):
     thumbnail = ndb.StringProperty(indexed=False)
     length = ndb.IntegerProperty(indexed=False)
 
+    tags = ndb.StringProperty(repeated=True)
+
     # popularity vs recent
     views = ndb.IntegerProperty()
     likes = ndb.IntegerProperty()
@@ -19,4 +21,4 @@ class Song(BaseModel):
 
     @classmethod
     def queryRecentSongs(cls):
-        return cls.query().order(-cls.update_at)
+        return cls.query().order(cls.update_at)

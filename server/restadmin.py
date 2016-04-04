@@ -9,8 +9,6 @@ import json
 import string
 
 app = Flask(__name__)
-# Note: We don't need to call run() since our application is embedded within
-# the App Engine WSGI application server.
 
 @app.route('/restadmin/songs', methods = ['GET'])
 def get_tasks():
@@ -19,6 +17,17 @@ def get_tasks():
     for song in songs:
         songDictArray.append(song.to_dict())
     return jsonify({'songs': songDictArray})
+
+@app.route('/restadmin/song', methods = ['POST'])
+def save_songs():
+    modifiedSongs = request.json['songs']
+    print modifiedSongs
+    for modifiedSong in modifiedSongs:
+        song = Song.get_by_id(modifiedSong['id']);
+        song.title = modifiedSong['title']
+        song.tags = modifiedSong['tags']
+        song.put()
+    return 'true'
 
 @app.route('/restadmin/import', methods = ['POST'])
 def import_tasks():
@@ -44,8 +53,16 @@ def import_tasks():
 
 @app.route('/restadmin/upload', methods = ['POST'])
 def upload_song():
-    return jsonify(Song.queryRecentSongs())
+    file = request.files['file']
+    song = request.json['song']
+    if file:
+        filestream = file.read()
+        song = Song.get_by_id(modifiedSong['id']);
+        # ToDo upload to gcs. and put that file name here.
+        song.track = song.track;
+        song.put()
 
+    return 'true'
 
 @app.errorhandler(404)
 def page_not_found(e):

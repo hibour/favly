@@ -74,6 +74,25 @@ function initializeApp() {
   app.controller('SongCtrl', function($scope, $routeParams, $http, $mdDialog, songs) {
       var self = this;
       self.songs = songs.list;
+
+      self.edit = function(song, event) {
+        $mdDialog.show({
+          templateUrl: 'editSong.tpl',
+          parent: angular.element(document.body),
+          targetEvent: event,
+          controller: ['$scope', function($scope) {
+            $scope.song = song;
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.answer = function(song) {
+               song.isModified = true;
+               $mdDialog.hide();
+            };
+          }]
+        });
+      };
+
       self.onSongModified = function(chip, song) {
           song.isModified = true;
           return chip;
@@ -124,7 +143,7 @@ function initializeApp() {
                   modifiedsongs.push(value);
               }
           });
-          var data = {data: JSON.stringify(modifiedsongs), action: "SAVE_SONGS"};
+          var data = {songs: modifiedsongs, action: "SAVE_SONGS"};
           $http.post('/restadmin/song', data, {headers: {'Content-Type': 'application/json'}}).then(function() {
                // Success
               angular.forEach(modifiedsongs, function(value, key){

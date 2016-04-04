@@ -51,18 +51,67 @@
              sv-on-sort="songctrl.onSort($item, $partFrom, $partTo, $indexFrom, $indexTo)">
             <md-card ng-repeat="song in songctrl.songs" sv-element>
                 <section layout="row" layout-align="start start">
+                    <ng-md-icon icon="star_outline" ng-click="songctrl.edit(song, $event)"
+                            size="36"></ng-md-icon>
                     <ng-md-icon icon="sort" size="36" sv-handle></ng-md-icon>
                 </section>
                 <img ng-src="{{song.thumbnail}}" class="md-card-image" alt="{{song.title}}">
                 <md-card-content>
                     <h4 class="md-title">{{song.title}}</h4>
-                    <h3 class="md-title">{{song.album}}</h3>
-                    <h3 class="md-title">{{song.year}}</h3>
+                    <p>{{song.album}}</p>
+                    <md-chips
+                            ng-model="song.tags"
+                            placeholder="Add a tag"
+                            delete-button-label="Remove Tag"
+                            delete-hint="Press delete to remove tag"
+                            md-on-add="songctrl.onSongModified($chip, song);"
+                            md-on-remove="songctrl.onSongModified($chip, song);"
+                            secondary-placeholder="Add a Tag"></md-chips>
                 </md-card-content>
             </md-card>
         </div>
     </md-content>
 </script>
+
+<script type="text/ng-template" id="editSong.tpl">
+    <md-dialog layout="column" ng-cloak>
+        <md-toolbar class="md-primary">
+            <h2 class="md-toolbar-tools">
+                Edit Song
+            </h2>
+        </md-toolbar>
+        <md-dialog-content layout-padding>
+            <div class="md-dialog-content">
+                <form name="editSongForm">
+                    <md-input-container class="md-block">
+                        <label>Title</label>
+                        <input ng-model="song.title"/>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Year</label>
+                        <input ng-model="song.year"/>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Lyrics</label>
+                        <textarea ng-model="lyrics"
+                                  md-placeholder="Word Synonym1,Synonym2"
+                                  rows="8"></textarea>
+                    </md-input-container>
+                </form>
+            </div>
+        </md-dialog-content>
+        <div class="md-actions" layout="row">
+            <span flex></span>
+            <md-button ng-click="cancel()">
+                Cancel
+            </md-button>
+            <md-button ng-click="answer(song)" style="margin-right:20px;" >
+                Add
+            </md-button>
+        </div>
+    </md-dialog>
+</script>
+
 
 <!-- Angular Material Dependencies -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
