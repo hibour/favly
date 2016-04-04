@@ -26,7 +26,7 @@ class RecordingItem extends Component {
     return (
       <TouchableHighlight onPress={this.props.onPress} >
         <View style={[CommonStyles.listItem]}>
-          <Image source={{uri: recording.thumbnail}} style={styles.thumbnail}/>
+          <Image source={{uri: Constants.getCDNUrl(recording.thumbnail)}} style={styles.thumbnail}/>
           <View style={styles.rightContainer}>
             <Title style={styles.title}>{recording.title}</Title>
             <Subtitle style={styles.date}>{moment(recording.time).toNow(true)}</Subtitle>

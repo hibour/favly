@@ -12,6 +12,7 @@ var {
 import {styles as CommonStyles} from '../css/common';
 import Title from './text/Title';
 import Subtitle from './text/Subtitle';
+import Constants from '../utils/constants'
 
 class SongItem extends Component {
 
@@ -24,7 +25,7 @@ class SongItem extends Component {
     return (
       <TouchableHighlight onPress={this.props.onPress} >
         <View style={[CommonStyles.listItem]}>
-          <Image source={{uri: song.thumbnail}} style={styles.thumbnail}/>
+          <Image source={{uri: Constants.getCDNUrl(song.thumbnail)}} style={styles.thumbnail}/>
           <View style={styles.rightContainer}>
             <Title style={styles.title}>{song.title}</Title>
             <View style={styles.subDetails}>

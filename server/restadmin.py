@@ -3,6 +3,8 @@
 # Import the Flask Framework
 from flask import Flask, jsonify, abort, request, make_response, url_for
 from models.song import Song
+from models.album import Album
+
 import json
 import string
 

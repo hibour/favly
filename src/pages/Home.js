@@ -9,8 +9,6 @@ import React, {
 } from 'react-native';
 
 import { connect } from 'react-redux'
-const Firebase = require('firebase');
-
 import FavlyTabBar from '../components/FavlyTabBar';
 import SongListWrapper from '../components/SongListWrapper';
 import RecordingListWrapper from '../components/RecordingListWrapper';
@@ -22,12 +20,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Constants from '../utils/constants.js'
 import {styles as CommonStyles} from '../css/common.js';
 
-
-
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.database = new Firebase(Constants.FIREBASEURL);
   }
 
   render() {

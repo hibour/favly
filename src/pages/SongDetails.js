@@ -29,6 +29,8 @@ import HomeActions from '../actions/home'
 import SongsActions from '../actions/songs'
 import SongPlayerActions from '../actions/songplayer'
 
+import Constants from '../utils/constants'
+
 class SongDetails extends Component {
   constructor(props) {
     super(props);
@@ -66,7 +68,7 @@ class SongDetails extends Component {
 
           renderBackground={() => (
             <View key="background">
-              <Image style={styles.largeArtwork} source={{uri: song.thumbnail}}></Image>
+              <Image source={{uri: Constants.getCDNUrl(song.thumbnail)}} style={styles.largeArtwork}/>
             </View>
           )}
 
