@@ -46,7 +46,7 @@ var Constants = {
       base = RNFS.DocumentDirectoryPath + '/' + base;
       return base + '.m4a';
     } else {
-      return base + '.wav';
+      return base + '.wma';
     }
   },
 }

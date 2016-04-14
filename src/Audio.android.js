@@ -145,7 +145,7 @@ var AudioMixer = {
     "[outa]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=0.2[a1];" +
     "[1:a]aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo,volume=1.0,atrim=start=0.25[a2];" +
     "[a1][a2]amerge,pan=stereo:c0<c0+c2:c1<c1+c3[out] " +
-    "-map [out] -c:a pcm_s16le -shortest ", path3, callback);
+    "-map [out] -c:a pcm_s8 -strict -2 -shortest ", path3, callback);
     // Smoothing
     // AudioMixingModule.mixAudio(" -i " + path2 +
     // " -af highpass=f=200,lowpass=f=3000 -c:a pcm_s16le -shortest ", path3, callback);

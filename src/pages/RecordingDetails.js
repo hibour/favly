@@ -22,6 +22,8 @@ import RecordingsActions from '../actions/recordings'
 import RecordingPlayerActions from '../actions/recordingplayer'
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import Constants from '../utils/constants'
+
 class RecordingDetails extends Component {
   constructor(props) {
     super(props);
@@ -44,7 +46,7 @@ class RecordingDetails extends Component {
       return (<View></View>);
     }
     return (<View style={styles.container} key="background">
-              <Image style={styles.largeArtwork} source={{uri: recording.thumbnail}}/>
+              <Image source={{uri: Constants.getCDNUrl(recording.thumbnail)}} style={styles.largeArtwork}/>
               <RecordingPlayer/>
               <View style={styles.recordingFileControls}>
                 <Icon.Button name="share"
