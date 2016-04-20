@@ -76,6 +76,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(mixAudio:(NSString *)audio
                   withAudio:(NSString *)vocal
                   withDurations:(NSArray *)durations
+                  withSpeaker:(BOOL)speaker
                   withDestination:(NSString *)destination
                   withCallback:(RCTResponseSenderBlock)callback)
 {
@@ -91,12 +92,14 @@ createCompositionTrackFor:vocal
       withDurations:nil
          withVolume:0.9
         withTrackId:1];
-  [self composition:composition
-createCompositionTrackFor:audio
- withAudioMixParams:audioMixParams
-      withDurations:durations
-         withVolume:0.2
-        withTrackId:2];
+  if (!speaker) {
+    [self composition:composition
+  createCompositionTrackFor:audio
+   withAudioMixParams:audioMixParams
+        withDurations:durations
+           withVolume:0.2
+          withTrackId:2];
+  }
   
   AVAssetExportSession* exportSession = [[AVAssetExportSession alloc] initWithAsset:composition
                                                                          presetName:AVAssetExportPresetAppleM4A];

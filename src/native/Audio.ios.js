@@ -163,8 +163,8 @@ var AudioRecorder = {
 };
 
 var AudioMixer = {
-  mixAudio: function(path1, path2, periods, path3, callback) {
-    AudioMixingManager.mixAudio(path1, path2, periods, path3, (error, success) => {
+  mixAudio: function(path1, path2, periods, isOnSpeaker, path3, callback) {
+    AudioMixingManager.mixAudio(path1, path2, periods, isOnSpeaker, path3, (error, success) => {
       if (callback) {
         var result = {result: success, audioFileURL: path3};
         callback(error, result);

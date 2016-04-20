@@ -1,6 +1,6 @@
 var offline = require('react-native-simple-store')
 import Cache from '../utils/Cache';
-import Share from '../Share';
+import Share from '../native/Share';
 import RecordingPlayerActions from './recordingplayer'
 
 var actions = exports = module.exports

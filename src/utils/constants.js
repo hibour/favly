@@ -15,6 +15,7 @@ var Constants = {
     }
     return this.BASEURL + path;
   },
+  
   getCDNUrl: function(path) {
     if (this.isProduction) {
       return this.PRODCDNURL + path;

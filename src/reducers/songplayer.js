@@ -23,6 +23,7 @@ const initialState = {
   isRecording: false,
   isActive: false,
   isMute: false,
+  isOnSpeaker: false,
 
   currentSong: {},
   currentTime: 0,
@@ -93,6 +94,7 @@ const songplayer = (state = initialState, action) => {
         ...state,
         isPlaying: true,
         isActive: true,
+        isOnSpeaker: action.isOnSpeaker,
       }
 
     case STOP_SONG:
@@ -100,6 +102,7 @@ const songplayer = (state = initialState, action) => {
         ...state,
         isPlaying: false,
         isActive: false,
+        isOnSpeaker: false,        
       }
 
     case START_RECORDING:

@@ -95,20 +95,26 @@ RCT_EXPORT_METHOD(play:(NSString *)path options:(NSDictionary *)options)
 
   NSString *sessionCategory = [RCTConvert NSString:options[@"sessionCategory"]];
 
+  AVAudioSession *audioSession = [AVAudioSession sharedInstance];
   if ([sessionCategory isEqualToString:@"Ambient"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryAmbient error:nil];
   } else if ([sessionCategory isEqualToString:@"SoloAmbient"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
+    [audioSession setCategory:AVAudioSessionCategorySoloAmbient error:nil];
   } else if ([sessionCategory isEqualToString:@"Playback"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
   } else if ([sessionCategory isEqualToString:@"Record"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryRecord error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryRecord error:nil];
   } else if ([sessionCategory isEqualToString:@"PlayAndRecord"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
   } else if ([sessionCategory isEqualToString:@"AudioProcessing"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAudioProcessing error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryAudioProcessing error:nil];
   } else if ([sessionCategory isEqualToString:@"MultiRoute"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryMultiRoute error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryMultiRoute error:nil];
+  }
+  
+  BOOL isSpeaker = [RCTConvert BOOL:options[@"isSpeaker"]];
+  if (isSpeaker) {
+    [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
   }
 
   _audioFileURL = [NSURL fileURLWithPath:audioFilePath];
@@ -135,20 +141,21 @@ RCT_EXPORT_METHOD(playWithUrl:(NSURL *) url options:(NSDictionary *)options)
   NSData* data = [NSData dataWithContentsOfURL: url];
   NSString *sessionCategory = [RCTConvert NSString:options[@"sessionCategory"]];
 
+  AVAudioSession *audioSession = [AVAudioSession sharedInstance];
   if ([sessionCategory isEqualToString:@"Ambient"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryAmbient error:nil];
   } else if ([sessionCategory isEqualToString:@"SoloAmbient"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
+    [audioSession setCategory:AVAudioSessionCategorySoloAmbient error:nil];
   } else if ([sessionCategory isEqualToString:@"Playback"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
   } else if ([sessionCategory isEqualToString:@"Record"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryRecord error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryRecord error:nil];
   } else if ([sessionCategory isEqualToString:@"PlayAndRecord"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
   } else if ([sessionCategory isEqualToString:@"AudioProcessing"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAudioProcessing error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryAudioProcessing error:nil];
   } else if ([sessionCategory isEqualToString:@"MultiRoute"]) {
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryMultiRoute error:nil];
+    [audioSession setCategory:AVAudioSessionCategoryMultiRoute error:nil];
   }
 
   _audioPlayer = [[AVAudioPlayer alloc] initWithData:data  error:&error];

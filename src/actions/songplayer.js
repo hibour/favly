@@ -1,4 +1,5 @@
-var { AudioRecorder, AudioPlayer, AudioMixer } = require('../Audio');
+var { AudioRecorder, AudioPlayer, AudioMixer } = require('../native/Audio');
+import Headphones from '../native/Headphones';
 import moment from 'moment';
 import RNFS from 'react-native-fs';
 import Constants from '../utils/constants.js'
@@ -57,11 +58,18 @@ exports.playSong = function() {
       _stopSong(dispatch, getState);
     }
     AudioPlayer.setFinishedSubscription();
-
-    // Start playing the song.
-    AudioPlayer.play(Constants.getSongPath(song), {sessionCategory: 'PlayAndRecord'});
-    dispatch({
-      type: actions.PLAY_SONG
+    Headphones.isPluggedin(function(result){
+      // Start playing the song.
+      var isOnSpeaker = !result;
+      AudioPlayer.play(Constants.getSongPath(song),
+      {
+        sessionCategory: 'PlayAndRecord',
+        isSpeaker: isOnSpeaker,
+      });
+      dispatch({
+        type: actions.PLAY_SONG,
+        isOnSpeaker: isOnSpeaker
+      });
     });
   }
 }
@@ -138,10 +146,12 @@ var _stopRecording = function(dispatch, getState) {
         })
         songplayer = getState().songplayer;
         var song = songplayer.currentSong;
+        var isOnSpeaker = songplayer.isOnSpeaker;
         var path = Constants.getFinalRecordPath(song, new Date());
         AudioMixer.mixAudio(Constants.getSongPath(song),
           data.audioFileURL,
           songplayer.recordingPeriods,
+          isOnSpeaker,
           path,
           (error, success) => {
             if (!error) {
@@ -161,7 +171,7 @@ var _stopRecording = function(dispatch, getState) {
               console.log(">>> Failed :( ", error, success);
               //TODO Show error to the user.
             }
-          })        
+          })
       })
     }
     AudioRecorder.stopRecording();

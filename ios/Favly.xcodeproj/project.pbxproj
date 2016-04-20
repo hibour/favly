@@ -33,6 +33,7 @@
 		920DBDA61C8EA3AD00B9F7C1 /* AudioRecorderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 920DBDA41C8EA3AD00B9F7C1 /* AudioRecorderManager.m */; };
 		920DBDA81C8EBA6D00B9F7C1 /* AudioMixingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 920DBDA71C8EBA6D00B9F7C1 /* AudioMixingManager.m */; };
 		921C5C891C976B5700B0B5C1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 921C5C881C976B5700B0B5C1 /* libz.tbd */; };
+		922900D11CC067F0004568F0 /* HeadphonesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 922900D01CC067F0004568F0 /* HeadphonesManager.m */; };
 		92A9081B1C9F9E8A00F17DF1 /* ShareManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92A9081A1C9F9E8A00F17DF1 /* ShareManager.m */; };
 		A3991F9B0ED94727B9A49046 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A1DB2EC4935241668877DB6A /* Foundation.ttf */; };
 		AE6369CFE6FE4D47874A1AD5 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8304429DE1C747A3BE608BFB /* Entypo.ttf */; };
@@ -189,6 +190,8 @@
 		920DBDA71C8EBA6D00B9F7C1 /* AudioMixingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioMixingManager.m; path = Favly/AudioMixingManager.m; sourceTree = "<group>"; };
 		920DBDA91C8EBAA900B9F7C1 /* AudioMixingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioMixingManager.h; path = Favly/AudioMixingManager.h; sourceTree = "<group>"; };
 		921C5C881C976B5700B0B5C1 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		922900C11CC067E0004568F0 /* HeadphonesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeadphonesManager.h; sourceTree = "<group>"; };
+		922900D01CC067F0004568F0 /* HeadphonesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeadphonesManager.m; sourceTree = "<group>"; };
 		92A9081A1C9F9E8A00F17DF1 /* ShareManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareManager.m; path = Favly/ShareManager.m; sourceTree = "<group>"; };
 		92A9081C1C9F9E9C00F17DF1 /* ShareManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareManager.h; path = Favly/ShareManager.h; sourceTree = "<group>"; };
 		A1DB2EC4935241668877DB6A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -381,6 +384,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				922900D01CC067F0004568F0 /* HeadphonesManager.m */,
+				922900C11CC067E0004568F0 /* HeadphonesManager.h */,
 				92A9081C1C9F9E9C00F17DF1 /* ShareManager.h */,
 				92A9081A1C9F9E8A00F17DF1 /* ShareManager.m */,
 				921C5C881C976B5700B0B5C1 /* libz.tbd */,
@@ -733,6 +738,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				922900D11CC067F0004568F0 /* HeadphonesManager.m in Sources */,
 				920DBDA61C8EA3AD00B9F7C1 /* AudioRecorderManager.m in Sources */,
 				92A9081B1C9F9E8A00F17DF1 /* ShareManager.m in Sources */,
 				920DBDA81C8EBA6D00B9F7C1 /* AudioMixingManager.m in Sources */,

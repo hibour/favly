@@ -1,4 +1,4 @@
-var { AudioPlayer } = require('../Audio');
+var { AudioPlayer } = require('../native/Audio');
 
 var actions = exports = module.exports
 
