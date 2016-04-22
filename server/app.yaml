@@ -25,7 +25,6 @@ handlers:
 
 - url: /restadmin/.*  # This regex directs all routes to main.app
   script: restadmin.app
-  login: admin
 
 - url: /admin/(.*)
   static_files: admin/\1
@@ -37,6 +36,15 @@ handlers:
   upload: admin
   login: admin
 
+- url: /admin2/(.*)
+  static_files: admin2/\1
+  upload: admin2
+  login: admin
+
+- url: /admin2
+  static_files: admin2/index.html
+  upload: admin2
+  login: admin
 
 
 # Third party libraries that are included in the App Engine SDK must be listed

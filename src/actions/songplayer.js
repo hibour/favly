@@ -65,6 +65,7 @@ exports.playSong = function() {
       {
         sessionCategory: 'PlayAndRecord',
         isSpeaker: isOnSpeaker,
+        volume: isOnSpeaker ? 0.6 : 1.0,
       });
       dispatch({
         type: actions.PLAY_SONG,

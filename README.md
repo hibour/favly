@@ -26,3 +26,7 @@ http://www.lrcgenerator.com/
 
 ### Telugu Karaoke tracks
 http://www.telugulyrics.org/Tracks.aspx?Type=Movie
+
+### Running backend
+- cd server
+- dev_appserver.py app.yaml

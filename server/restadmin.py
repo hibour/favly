@@ -11,14 +11,14 @@ import string
 app = Flask(__name__)
 
 @app.route('/restadmin/songs', methods = ['GET'])
-def get_tasks():
+def get_songs():
     songs = Song.queryRecentSongs()
     songDictArray = [];
     for song in songs:
         songDictArray.append(song.to_dict())
     return jsonify({'songs': songDictArray})
 
-@app.route('/restadmin/song', methods = ['POST'])
+@app.route('/restadmin/songs', methods = ['POST'])
 def save_songs():
     modifiedSongs = request.json['songs']
     print modifiedSongs
@@ -28,6 +28,11 @@ def save_songs():
         song.tags = modifiedSong['tags']
         song.put()
     return 'true'
+    
+@app.route('/restadmin/song/<songid>', methods = ['GET'])
+def get_song(songid=''):
+    song = Song.query(id=songid)
+    return jsonify({'song': song.to_dict()})    
 
 @app.route('/restadmin/import', methods = ['POST'])
 def import_tasks():
@@ -74,3 +79,10 @@ def page_not_found(e):
 def application_error(e):
     """Return a custom 500 error."""
     return 'Sorry, unexpected error: {}'.format(e), 500
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE, OPTIONS')
+    return response

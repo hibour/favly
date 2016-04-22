@@ -123,7 +123,13 @@ RCT_EXPORT_METHOD(play:(NSString *)path options:(NSDictionary *)options)
     initWithContentsOfURL:_audioFileURL
     error:&error];
   _audioPlayer.delegate = self;
-  [_audioPlayer setVolume:1.0];
+  
+  NSNumber *volume = [RCTConvert NSNumber:options[@"volume"]];
+  if (volume) {
+    [_audioPlayer setVolume:[volume floatValue]];
+  } else {
+    [_audioPlayer setVolume:1.0];
+  }
 
   if (error) {
     [self stopProgressTimer];
