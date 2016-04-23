@@ -5,21 +5,16 @@ def list_class_properties(cls):
     return [k for k,v in cls.__dict__.iteritems() if type(v) is property]
 
 class BaseModel(ndb.Model):
-    @property
-    def id(self):
-        #return urllib.quote_plus(self.key.string_id());
-        return self.key.string_id();
-
     @classmethod
     def delete(cls, id):
-        key = ndb.Key(cls._get_kind(), id);
-        key.delete();
+        key = ndb.Key(cls._get_kind(), id)
+        key.delete()
 
     def to_dict(self):
-        result = super(BaseModel,self).to_dict();
-        cls = self.__class__;
-        properties = list_class_properties(cls);
+        result = super(BaseModel,self).to_dict()
+        cls = self.__class__
+        properties = list_class_properties(cls)
         for property in properties:
-            result[property] = self.__getattribute__(property);
-        result['id'] = self.__getattribute__('id');
+            result[property] = self.__getattribute__(property)
+        result['id'] = self.key.urlsafe()
         return result

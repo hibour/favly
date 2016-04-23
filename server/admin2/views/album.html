@@ -1,0 +1,22 @@
+<div>
+<album class="col-sm-4 col-md-3" model="album.album"></album>
+<p/>
+<form>
+  <div class="form-group">
+    <label for="title">Album Title</label>
+    <input type="text" class="form-control" id="title" placeholder="Title" ng-model="album.album.title">
+  </div>
+  <div class="form-group">
+    <label for="year">Year</label>
+    <input type="text" class="form-control" id="year" placeholder="Year" ng-model="album.album.year">
+    </select>    
+  </div>
+  
+  <div class="form-group">
+    <label for="thumbFile">Thumb File</label>
+    <input type="file" id="thumbFile">
+  </div>  
+  
+  <button class="btn btn-default" ng-click="save(album);">Save</button>
+</form>
+</div>

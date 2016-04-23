@@ -1,0 +1,9 @@
+<div class="row grid">
+        <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group pull-right" role="group">
+                        <button class="btn btn-default" ng-click="newAlbum()">New</button>
+                </div>
+        </div>     
+        <album ng-repeat="album in albums.albums" class="col-sm-4 col-md-3" model="album">
+        </album>
+</div>

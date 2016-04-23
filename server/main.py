@@ -13,7 +13,7 @@ def first_page():
     albums = Album.queryRecentAlbums()
     songDictArray = [];
     for song in songs:
-        songDictArray.append(song.to_dict())
+        songDictArray.append(song.to_full_dict())
     albumDictArray = [];
     for album in albums:
         albumDictArray.append(album.to_dict())
@@ -23,10 +23,10 @@ def first_page():
 @app.route('/rest/album/<albumid>', methods = ['GET'])
 def get_album(albumid=''):
     album = Album.query(id=albumid)
-    songs = Song.queryAlbumSongs(albumid)
+    songs = Song.queryAlbum(album.key)
     songDictArray = [];
     for song in songs:
-        songDictArray.append(song.to_dict())
+        songDictArray.append(song.to_full_dict())
     return jsonify({'songs': songDictArray, 'album': album.to_dict()})
 
 @app.route('/rest/songs/<offset>', methods = ['GET'])
@@ -34,7 +34,7 @@ def get_songs(offset=''):
     songs = Song.queryRecentSongs(offset)
     songDictArray = [];
     for song in songs:
-        songDictArray.append(song.to_dict())
+        songDictArray.append(song.to_full_dict())
     print songDictArray
     return jsonify({'songs': songDictArray})
 

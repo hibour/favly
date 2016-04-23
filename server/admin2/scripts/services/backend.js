@@ -13,7 +13,6 @@ angular.module('kuhuadminApp')
     var songs = {};
     songs.list = [];
     songs.dict = {};
-            
     var addSongs = function(newSongs) {
       angular.forEach(newSongs, function(song) {
         if (!songs.dict[song.id]) {
@@ -21,6 +20,7 @@ angular.module('kuhuadminApp')
           songs.list.push(song);
         }
       });
+      console.log("Adding >> ", songs.list);
     };
     
     this.getSongs = function(callback) {
@@ -32,6 +32,12 @@ angular.module('kuhuadminApp')
     };
     
     this.getSong = function(id, callback) {
+      
+      if (id == 'new') {
+        callback({}); // User is trying to add a new song. return empty object.
+        return;
+      }
+      
       if (!songs.dict[id]) {
         $http.get(API_END_POINT + '/restadmin/song/'+id).success(function(d){
           addSongs([d.song]);
@@ -41,6 +47,56 @@ angular.module('kuhuadminApp')
         callback(songs.dict[id]);
       }
     };
+    
+    this.saveSong = function(song, callback) {
+        $http.post(API_END_POINT + '/restadmin/songs', {songs: [song]}).success(function(d){
+          addSongs([d.songs]);
+          callback(true);
+        }).error(function() {callback(false);});      
+    }
 
-    return;        
+    var albums = {};
+    albums.list = [];
+    albums.dict = {};
+    var addAlbums = function(newAlbums) {
+      angular.forEach(newAlbums, function(album) {
+        if (!albums.dict[album.id]) {
+          albums.dict[album.id] = album;
+          albums.list.push(album);
+        }
+      });
+      console.log("Adding Album >> ", albums.list);
+    };
+    
+    this.getAlbums = function(callback) {
+      // refresh!! 
+      $http.get(API_END_POINT + '/restadmin/albums').success(function(d) {
+        addAlbums(d.albums);
+        callback(albums.list);
+      }).error(function() { callback(albums.list); });
+    };
+    
+    this.getAlbum = function(id, callback) {
+      if (id == 'new') {
+        callback({}); // User is trying to add a new song. return empty object.
+        return;
+      }
+      
+      if (!albums.dict[id]) {
+        $http.get(API_END_POINT + '/restadmin/album/'+id).success(function(d){
+          addAlbums([d.album]);
+          callback(albums.dict[id]);
+        }).error(function() {callback(null);});
+      } else {
+        callback(albums.dict[id]);
+      }
+    }; 
+    
+    this.saveAlbum = function(album, callback) {
+        $http.post(API_END_POINT + '/restadmin/albums', {albums: [album]}).success(function(d){
+          addAlbums([d.albums]);
+          callback(true);
+        }).error(function() {callback(false);});      
+    }
+           
   });

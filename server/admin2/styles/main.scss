@@ -89,3 +89,10 @@ body {
     border-bottom: 0;
   }
 }
+
+.grid {
+  .thumbnail > img, .thumbnail a > img {
+    width: 200px;
+    height: 150px;
+  }
+}

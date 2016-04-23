@@ -5,6 +5,7 @@ from flask import Flask, jsonify, abort, request, make_response, url_for
 from models.song import Song
 from models.album import Album
 
+from google.appengine.ext import ndb
 import json
 import string
 
@@ -15,24 +16,78 @@ def get_songs():
     songs = Song.queryRecentSongs()
     songDictArray = [];
     for song in songs:
-        songDictArray.append(song.to_dict())
+        songDictArray.append(song.to_full_dict())
     return jsonify({'songs': songDictArray})
 
 @app.route('/restadmin/songs', methods = ['POST'])
 def save_songs():
     modifiedSongs = request.json['songs']
     print modifiedSongs
+    songDictArray = [];
     for modifiedSong in modifiedSongs:
-        song = Song.get_by_id(modifiedSong['id']);
-        song.title = modifiedSong['title']
-        song.tags = modifiedSong['tags']
+        song = None
+        if modifiedSong.has_key('id'):
+            song = ndb.Key(urlsafe=modifiedSong['id']).get()
+        if not modifiedSong.has_key('tags'):
+            modifiedSong['tags'] = []
+         
+        album_key = ndb.Key(urlsafe=modifiedSong['album_id'])
+        if song != None:
+            song.title = modifiedSong['title']
+            song.tags = modifiedSong['tags']        
+        else:
+            song = Song(album_key=album_key, title=modifiedSong['title'], tags=modifiedSong['tags'])        
         song.put()
-    return 'true'
-    
+        songDictArray.append(song.to_full_dict())
+    return jsonify({'songs': songDictArray})
+
+@app.route('/restadmin/albums', methods = ['GET'])
+def get_albums():
+    albums = Album.queryRecentAlbums()
+    albumDictArray = [];
+    for album in albums:
+        albumDictArray.append(album.to_dict())
+    print albumDictArray
+    return jsonify({'albums': albumDictArray})
+
+@app.route('/restadmin/albums', methods = ['POST'])
+def save_albums():
+    modifiedAlbums = request.json['albums']
+    print modifiedAlbums
+    albumDictArray = [];
+    for modifiedAlbum in modifiedAlbums:
+        album = None
+        if modifiedAlbum.has_key('id'):
+            album = ndb.Key(urlsafe=modifiedAlbum['id']).get()
+        if not modifiedAlbum.has_key('thumbnail'):
+            modifiedAlbum['thumbnail'] = 'none'
+        if album != None:
+            album.title = modifiedAlbum['title']
+            album.thumbnail = modifiedAlbum['thumbnail']
+            album.year = int(modifiedAlbum['year'])        
+        else:
+            album = Album(title=modifiedAlbum['title'], thumbnail=modifiedAlbum['thumbnail'], year=int(modifiedAlbum['year']))
+        album.put()
+        albumDictArray.append(album.to_dict())
+    return jsonify({'albums': albumDictArray})
+
 @app.route('/restadmin/song/<songid>', methods = ['GET'])
 def get_song(songid=''):
-    song = Song.query(id=songid)
-    return jsonify({'song': song.to_dict()})    
+    key = ndb.Key(urlsafe=songid)
+    song = key.get()
+    if song != None:
+        return jsonify({'song': song.to_full_dict()})
+    else:
+        return jsonify({'song': None})
+
+@app.route('/restadmin/album/<albumid>', methods = ['GET'])
+def get_album(albumid=''):
+    key = ndb.Key(urlsafe=albumid)
+    album = key.get()
+    if album != None:
+        return jsonify({'album': album.to_dict()})
+    else:
+        return jsonify({'album': None})
 
 @app.route('/restadmin/import', methods = ['POST'])
 def import_tasks():
@@ -41,19 +96,28 @@ def import_tasks():
     if file:
         filestream = file.read()
         jsonData = json.loads(filestream);
+        albums = {};
         for jsonSong in jsonData['songs']:
-            jsonSong['lyrics'] = jsonSong['lyrics'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore');
-            jsonSong['thumbnail'] = jsonSong['thumbnail'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore');
-            jsonSong['track'] = jsonSong['track'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore');
-
             album = jsonSong['album'].encode('ascii', 'ignore').translate(None, string.whitespace).translate(None, string.punctuation).lower()
             title = jsonSong['title'].encode('ascii', 'ignore').translate(None, string.whitespace).translate(None, string.punctuation).lower()
             id = album + '~' + title
+            thumbnail = jsonSong['thumbnail'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore')
+            year = int(jsonSong['year'])
+            version = int(jsonSong['version'])
+            lyrics = jsonSong['lyrics'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore');
+            track = jsonSong['track'].replace('https://shining-fire-6281.firebaseapp.com', '/public').encode('ascii', 'ignore');
+            
+            if not albums.has_key(album):
+                albums[album] = Album(title=jsonSong['album'], thumbnail=thumbnail, year=year)
+                albums[album].put() 
 
-            song = Song(id=id,title=jsonSong['title'],album=jsonSong['album'],track=jsonSong['track'],lyrics=jsonSong['lyrics'],version=int(jsonSong['version']),year=int(jsonSong['year']),thumbnail=jsonSong['thumbnail'])
+            song = Song(title=jsonSong['title'],album_key=albums[album].key,track=track,lyrics=lyrics,version=version)
             song.put()
-            newsongs.append(song.to_dict())
+            newsongs.append(song.to_full_dict())
 
+        for key, album in albums.iteritems():
+            album.put()
+        
     return jsonify({'songs': newsongs})
 
 @app.route('/restadmin/upload', methods = ['POST'])
