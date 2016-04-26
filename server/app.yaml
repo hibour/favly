@@ -26,16 +26,6 @@ handlers:
 - url: /restadmin/.*  # This regex directs all routes to main.app
   script: restadmin.app
 
-- url: /admin/(.*)
-  static_files: admin/\1
-  upload: admin
-  login: admin
-
-- url: /admin
-  static_files: admin/index.html
-  upload: admin
-  login: admin
-
 - url: /admin2/(.*)
   static_files: admin2/\1
   upload: admin2

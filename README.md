@@ -17,16 +17,23 @@
 - Modify `RCTWebSocketExecutor.m` and change `localhost` to your laptop's IP.
 - Then inside the app, shake once and enable "Remote Debugging" 
 
-## Deploying assets to firebase.
-- First install firebase-tools using `sudo pm install -g firebase-tools`
-- Then deploy using `firebase deploy`
+### Running backend
+Download and install google appengine sdk for python from here
+https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python
+
+In one terminal,
+- cd server
+- dev_appserver.py app.yaml
+
+Open a second terminal, (you may have to do npm install)
+- cd server/admin2
+- grunt serve
+
+Now, open http://localhost:9000/
+
 
 ### Generate LRC files
 http://www.lrcgenerator.com/
 
 ### Telugu Karaoke tracks
 http://www.telugulyrics.org/Tracks.aspx?Type=Movie
-
-### Running backend
-- cd server
-- dev_appserver.py app.yaml
