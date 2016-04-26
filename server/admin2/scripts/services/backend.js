@@ -13,11 +13,16 @@ angular.module('kuhuadminApp')
     var songs = {};
     songs.list = [];
     songs.dict = {};
+    songs.album_dict = {};
     var addSongs = function(newSongs) {
       angular.forEach(newSongs, function(song) {
         if (!songs.dict[song.id]) {
           songs.dict[song.id] = song;
           songs.list.push(song);
+          if (!songs.album_dict[song.album_id]) {
+            songs.album_dict[song.album_id] = [];
+          }
+          songs.album_dict[song.album_id].push(song);
         }
       });
       console.log("Adding >> ", songs.list);
@@ -72,6 +77,7 @@ angular.module('kuhuadminApp')
       // refresh!! 
       $http.get(API_END_POINT + '/restadmin/albums').success(function(d) {
         addAlbums(d.albums);
+        addSongs(d.songs);
         callback(albums.list);
       }).error(function() { callback(albums.list); });
     };
@@ -85,10 +91,11 @@ angular.module('kuhuadminApp')
       if (!albums.dict[id]) {
         $http.get(API_END_POINT + '/restadmin/album/'+id).success(function(d){
           addAlbums([d.album]);
-          callback(albums.dict[id]);
+          addSongs(d.songs);
+          callback(albums.dict[id], songs.album_dict[id]);
         }).error(function() {callback(null);});
       } else {
-        callback(albums.dict[id]);
+        callback(albums.dict[id], songs.album_dict[id]);
       }
     }; 
     
@@ -98,5 +105,16 @@ angular.module('kuhuadminApp')
           callback(true);
         }).error(function() {callback(false);});      
     }
-           
+        
+     this.importData = function(dataToImport) {
+        var formData = new FormData();
+        formData.append('file', dataToImport);
+        $http.post(API_END_POINT + '/restadmin/import', formData, 
+          {transformRequest: angular.identity, headers: {'Content-Type': undefined}})
+        .then(function(response) {
+          addSongs(response.data);
+        }, function() {
+          // Failed
+        });                 
+     }   
   });

@@ -29,13 +29,18 @@ def get_album(albumid=''):
         songDictArray.append(song.to_full_dict())
     return jsonify({'songs': songDictArray, 'album': album.to_dict()})
 
+@app.route('/rest/song/<songid>', methods = ['GET'])
+def get_song(songid=''):
+    album = Album.query(id=albumid)
+    song = Song.query(id=songid)
+    return jsonify({'song': song.to_full_dict_and_lyrics()})
+
 @app.route('/rest/songs/<offset>', methods = ['GET'])
 def get_songs(offset=''):
     songs = Song.queryRecentSongs(offset)
     songDictArray = [];
     for song in songs:
         songDictArray.append(song.to_full_dict())
-    print songDictArray
     return jsonify({'songs': songDictArray})
 
 @app.errorhandler(404)

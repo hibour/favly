@@ -15,9 +15,15 @@ angular.module('kuhuadminApp')
         // $location.path('/albums');
       });
     };
+
+    $scope.activateAndSave = function(album) {
+      album.is_active = true;
+      $scope.save(album);
+    };
     
     var self = this;
-    backend.getAlbum($routeParams.albumid, function(album) {
+    backend.getAlbum($routeParams.albumid, function(album, songs) {
       self.album = album;
+      self.songs = songs;
     });
   });

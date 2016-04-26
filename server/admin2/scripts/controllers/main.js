@@ -8,10 +8,10 @@
  * Controller of the kuhuadminApp
  */
 angular.module('kuhuadminApp')
-  .controller('MainCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('MainCtrl', function (backend, $scope) {
+    this.dataFile = '';
+    var self = this;
+    $scope.importData = function() {
+        backend.importData(self.dataFile);
+    }
   });

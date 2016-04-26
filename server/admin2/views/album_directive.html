@@ -1,9 +1,10 @@
 <div class="thumbnail">
     <a href="#/album/{{model.id}}">
-        <img ng-src="{{cdn}}{{model.thumbnail}}" alt="{{model.title}}" class='thumb_image' />
+        <img ng-src="{{model.thumbnail}}" alt="{{model.title}}" class='thumb_image' />
         <div class="caption">
             <h4>{{model.title}}</h4>
             <h5>{{model.year}}</h5>
+            <h5>{{model.is_active ? Active : Inactive}}</h5>
         </div>
     </a>
 </div>

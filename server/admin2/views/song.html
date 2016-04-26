@@ -16,15 +16,22 @@
   </div>
   
   <div class="form-group">
-    <label for="lyricFile">Lyric File</label>
-    <input type="file" id="lyricFile">
+    <label for="unsynced">Unsynced Lyrics</label>    
+    <textarea model="song.song.lyrics_unsynced['en']" name="unsynced"></textarea>
   </div>  
   
   <div class="form-group">
-    <label for="mp3File">Audio File</label>
-    <input type="file" id="mp3File">
-    <p class="help-block">Please upload an optimized mp3 file. < 3mb</p>
+    <audio controls="" name="media" preload>
+      <source src="{{song.song.trustedAudio}}" type="audio/mpeg">
+    </audio>    
+  </div>
+  <div class="form-group">
+    <label for="synced">Synced Lyrics</label>    
+    <textarea model="song.song.lyrics_synced['en']" name="synced"></textarea>
   </div>  
+  
+    
   <button class="btn btn-default" ng-click="save(song);">Save</button>
+  <button class="btn" ng-click="activateAndSave(album);">Activate</button>
 </form>
 </div>
